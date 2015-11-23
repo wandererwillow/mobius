@@ -1077,6 +1077,14 @@ var VIDAMO = ( function (mod){
 		return mObj[topoElement];
 	};
 
+	//
+	//
+	//
+	//
+	mod.loadShapeFile = function ( filename ){
+
+	};
+
 
 	//Could be shifted to MobiusSide
 
