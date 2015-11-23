@@ -1081,9 +1081,84 @@ var VIDAMO = ( function (mod){
 	//
 	//
 	//
-	mod.loadShapeFile = function ( filename ){
+	mod.loadShapeFile = function ( data ){
+		
+/*		var data = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"OBJECTID":1,"LOT_KEY":"MK03-02485P","INC_CRC":"73960B9B","FMEL_UPD_D":"2015-09-21T00:00:00.000Z","X_ADDR":23381.2466,"Y_ADDR":29035.88,"SHAPE_Leng":8.77884353446,"SHAPE_Area":2.17080000077},"geometry":{"type":"Polygon","coordinates":[[[23381.62000000011,29034.519999999553],[23379.650000000373,29037.820000000298],[23382.46999999974,29035.300000000745],[23381.62000000011,29034.519999999553]]]}},
+{"type":"Feature","properties":{"OBJECTID":2,"LOT_KEY":"MK20-02759V","INC_CRC":"256B177E","FMEL_UPD_D":"2015-09-21T00:00:00.000Z","X_ADDR":28208.9416,"Y_ADDR":41250.172,"SHAPE_Leng":97.2662908614,"SHAPE_Area":416.536549986},"geometry":{"type":"Polygon","coordinates":[[[28226.150000000373,41238.73000000045],[28224.419999999925,41237.01999999955],[28220.790000000037,41232.74000000022],[28191.570000000298,41257.47000000067],[28191.830000000075,41257.72000000067],[28200.139999999665,41264.91000000015],[28202.509999999776,41266.699999999255],[28226.150000000373,41238.73000000045]]]}},
+{"type":"Feature","properties":{"OBJECTID":3,"LOT_KEY":"MK04-00514C","INC_CRC":"118A1D63","FMEL_UPD_D":"2015-09-21T00:00:00.000Z","X_ADDR":21893.4044,"Y_ADDR":34626.8145,"SHAPE_Leng":130.148409016,"SHAPE_Area":729.688199994},"geometry":{"type":"Polygon","coordinates":[[[21910.58999999985,34605.550000000745],[21874.730000000447,34621.169999999925],[21873.16000000015,34621.41000000015],[21873.44000000041,34621.77999999933],[21876.139999999665,34623.789999999106],[21879.790000000037,34626.00999999978],[21880.429999999702,34626.49000000022],[21880.91000000015,34628.08999999985],[21881.549999999814,34631.75999999978],[21882.349999999627,34633.18999999948],[21883.94000000041,34635.419999999925],[21885.21999999974,34638.9299999997],[21887.450000000186,34643.080000000075],[21890.16000000015,34646.90000000037],[21891.599999999627,34648.97000000067],[21893.349999999627,34652],[21894.41000000015,34653],[21895.040000000037,34651.960000000894],[21910.58999999985,34605.550000000745]]]}},
+{"type":"Feature","properties":{"OBJECTID":4,"LOT_KEY":"MK18-99302N","INC_CRC":"C6709D25","FMEL_UPD_D":"2015-09-21T00:00:00.000Z","X_ADDR":27927.375,"Y_ADDR":37455.9051,"SHAPE_Leng":63.9966574206,"SHAPE_Area":157.569900007},"geometry":{"type":"Polygon","coordinates":[[[27918.62000000011,37445.88000000082],[27930.759999999776,37468.77999999933],[27936.12999999989,37465.9299999997],[27923.990000000224,37443.02999999933],[27920.110000000335,37445.08999999985],[27918.62000000011,37445.88000000082]]]}}]
+				}*/
 
-	};
+		init_d3 = function() {
+
+				    geoConfig = function() {
+
+				        this.mercator = d3.geo.equirectangular();
+				        this.path = d3.geo.path().projection(this.mercator);
+
+				        var translate = this.mercator.translate();
+				        translate[0] = 500;
+				        translate[1] = 0;
+
+				        this.mercator.translate(translate);
+				        this.mercator.scale(0.3);
+				    }
+
+				    this.geo = new geoConfig();
+				}
+
+
+		add_countries = function(data) { console.log("here");
+
+			    var countries = [];
+			    var i, j;
+			    
+			    // convert to threejs meshes
+			    for (i = 0 ; i < 10000 ; i++) {
+			        var geoFeature = data.features[i];
+			        var properties = geoFeature.properties;
+			        var feature = this.geo.path(geoFeature);
+
+			        if(feature == undefined || feature.length == undefined){
+			         	console.log(i, "skipped");
+			         	continue;
+			        }
+
+			        // we only need to convert it to a three.js path
+			        var mesh = transformSVGPathExposed(feature); // this gives you a shape
+			        console.log("this->", i, feature.length);
+
+
+			        // add to array
+					countries.push({"data": properties, "mesh": mesh});
+			    } 
+
+				// extrude paths and add color
+			    for (i = 0 ; i < countries.length ; i++) {
+
+			        // create material color based on average       
+			        var material = new THREE.MeshPhongMaterial({
+			            opacity:0.5
+			        }); 
+
+			        // extrude mesh 
+			        
+				    var shape3d = countries[i].mesh.extrude({
+			            amount: 1, 
+			            bevelEnabled: false
+			        });
+
+			        // create a mesh based on material and extruded shape
+			        var toAdd = new THREE.Mesh(shape3d, material); 
+			        shapefile.add(toAdd); //console.log("appended");
+			    }
+			}
+
+			init_d3();
+			var shapefile = new THREE.Object3D(); 
+			add_countries( data );
+			return shapefile;
+};
 
 
 	//Could be shifted to MobiusSide
