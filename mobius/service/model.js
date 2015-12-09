@@ -187,7 +187,7 @@ vidamo.factory('generateCode', ['$rootScope',function ($rootScope) {
                                 var connected_input_name = data.chartViewModel.connections[l].dest.data.name;
 
                                 data.javascriptCode +=  'var '
-                                    + connected_input_name +' = VIDAMO.makeCopy('
+                                    + connected_input_name +' = MOBIUS.makeCopy('
                                     + return_obj_name
                                     + '.'
                                     + output_port_name + ',undefined,undefined,undefined);\n';
@@ -302,7 +302,8 @@ vidamo.factory('generateCode', ['$rootScope',function ($rootScope) {
                     }
 
                     data.innerCodeList[i] += ' ){\n';
-
+                    data.innerCodeList[i] += '    var FUNC_OUTPUT = ';
+                    data.innerCodeList[i] += data.chartViewModel.nodes[i].data.type + identifier + ';\n';
 
                     // define return items according to output port
                     var num_output_ports = data.chartViewModel.nodes[i].outputConnectors.length;
@@ -429,7 +430,8 @@ vidamo.factory('generateCode', ['$rootScope',function ($rootScope) {
                  }
 
                  if(procedure.method !== 'expression'){
-                     codeBlock +=  'VIDAMO.' + procedure.method + '(';
+
+                     codeBlock +=  'MOBIUS.' + procedure.category + '.' +procedure.method + '(';
 
                      for(var j = 0; j< procedure.parameters.length; j++){
                          if(j != procedure.parameters.length - 1 ){

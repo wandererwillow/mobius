@@ -1,6 +1,4 @@
-//
-// VIDAMO App
-//
+// @mobius app module
 
 var vidamo = angular.module('vidamo',
                             [
@@ -24,8 +22,40 @@ var vidamo = angular.module('vidamo',
                                 'ng-context-menu'
                             ]);
 
+    vidamo.filter('propsFilter', function() {
+        return function(items, props) {
+            var out = [];
+
+            if (angular.isArray(items)) {
+                var keys = Object.keys(props);
+
+                items.forEach(function(item) {
+                    var itemMatches = false;
+
+                    for (var i = 0; i < keys.length; i++) {
+                        var prop = keys[i];
+                        var text = props[prop].toLowerCase();
+                        if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+                            itemMatches = true;
+                            break;
+                        }
+                    }
+
+                    if (itemMatches) {
+                        out.push(item);
+                    }
+                });
+            } else {
+                // Let the output be the input untouched
+                out = items;
+            }
+
+            return out;
+        };
+    });
+
     // Simple service to create a prompt.
-    // todo replace with customizable one
+    // fixme not using
      vidamo.service('prompt', function () {
         return prompt;
     });
@@ -113,7 +143,6 @@ var vidamo = angular.module('vidamo',
 
     // regex to get parameter names
     // solution found in http://stackoverflow.com/questions/1007981/how-to-get-function-parameter-names-values-dynamically-from-javascript
-    // fixme should there be a way to do it in angularjs?
     var STRIP_COMMENTS = /(\/\/.*$)|(\/\*[\s\S]*?\*\/)|(\s*=[^,\)]*(('(?:\\'|[^'\r\n])*')|("(?:\\"|[^"\r\n])*"))|(\s*=[^,\)]*))/mg;
     var ARGUMENT_NAMES = /([^\s,]+)/g;
     function getParamNames(func) {

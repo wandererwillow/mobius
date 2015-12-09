@@ -31,7 +31,9 @@
 .angular-ui-tree-node,.angular-ui-tree-placeholder{
     display:block;
     position:relative;
-    margin:2px;
+    /*margin-top:2px;*/
+    /*margin-bottom:2px;*/
+margin:2px;
     padding:0;
     min-height:24px;
     line-height:20px;
@@ -62,6 +64,7 @@
     line-height:20px
 }
 
+
 .angular-ui-tree-drag{
     position:absolute;
     pointer-events:none;
@@ -74,7 +77,7 @@
     border-radius:1px;
 }
 
-.tree-hover :hover{
+.node-selected {
     background-color: #ddd;
 }
 

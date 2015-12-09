@@ -7,28 +7,43 @@
             "y": 1984.0131193645723,
             "inputConnectors": [
                 {
-                    "id": 1,
+                    "id": 4,
                     "title": "Input",
                     "name": "innerRad",
                     "connected": false,
-                    "dataValue": "3",
-                    "$$hashKey": "object:521"
+                    "dataValue": "12",
+                    "option": {
+                        "name": "none"
+                    },
+                    "color": "#000000",
+                    "$$hashKey": "object:358",
+                    "selected": false
                 },
                 {
-                    "id": 2,
+                    "id": 5,
                     "title": "Input",
                     "name": "torusRad",
                     "connected": false,
-                    "dataValue": "5",
-                    "$$hashKey": "object:528"
+                    "dataValue": "13",
+                    "option": {
+                        "name": "none"
+                    },
+                    "color": "#000000",
+                    "$$hashKey": "object:380",
+                    "selected": false
                 },
                 {
-                    "id": 3,
+                    "id": 6,
                     "title": "Input",
                     "name": "angle",
                     "connected": false,
                     "dataValue": "44/7",
-                    "$$hashKey": "object:1578"
+                    "option": {
+                        "name": "none"
+                    },
+                    "color": "#000000",
+                    "$$hashKey": "object:402",
+                    "selected": true
                 }
             ],
             "outputConnectors": [
@@ -48,7 +63,7 @@
                 }
             ],
             "type": "torus",
-            "version": 0,
+            "version": 1448445019675,
             "overwrite": true
         }
     ],
@@ -143,28 +158,43 @@
 [
     [
         {
-            "id": 1,
+            "id": 4,
             "title": "Input",
             "name": "innerRad",
             "connected": false,
-            "dataValue": "3",
-            "$$hashKey": "object:521"
+            "dataValue": "12",
+            "option": {
+                "name": "none"
+            },
+            "color": "#000000",
+            "$$hashKey": "object:358",
+            "selected": false
         },
         {
-            "id": 2,
+            "id": 5,
             "title": "Input",
             "name": "torusRad",
             "connected": false,
-            "dataValue": "5",
-            "$$hashKey": "object:528"
+            "dataValue": "13",
+            "option": {
+                "name": "none"
+            },
+            "color": "#000000",
+            "$$hashKey": "object:380",
+            "selected": false
         },
         {
-            "id": 3,
+            "id": 6,
             "title": "Input",
             "name": "angle",
             "connected": false,
             "dataValue": "44/7",
-            "$$hashKey": "object:1578"
+            "option": {
+                "name": "none"
+            },
+            "color": "#000000",
+            "$$hashKey": "object:402",
+            "selected": true
         }
     ]
 ]

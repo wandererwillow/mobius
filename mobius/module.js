@@ -1,8 +1,11 @@
-//
-// VIDAMO module, open for editing by Module Developer
-//
+/**
+ * Mobius Module
+ *
+ *  @module open to edit
+ */
 
-var VIDAMO = ( function (mod){
+
+( function (mod){
 
 	/*
 	 *
@@ -36,7 +39,7 @@ var VIDAMO = ( function (mod){
 	 * @param {int} blue - Value between 0-255 for blue color
 	 * @returns {string} - HexValue
 	 */
-	mod.rgbToHex = function(red, green, blue){
+/*	mod.rgbToHex = function(red, green, blue){
 		
 		return '0x'+toHex(red)+toHex(green)+toHex(blue);
 			
@@ -47,7 +50,7 @@ var VIDAMO = ( function (mod){
 			 return "0123456789ABCDEF".charAt((n-n%16)/16)
 				  + "0123456789ABCDEF".charAt(n%16);
 		}
-	};
+	};*/
 	
 	/**
 	 * Converts degrees into radians

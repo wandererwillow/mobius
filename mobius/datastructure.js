@@ -16,6 +16,7 @@ var mObj = function mObj( type ){
 	}
 }
 
+<<<<<<< HEAD
 //
 // all imports like shapefile, obj, excels etc
 // might have data, or might have geometry or both
@@ -56,6 +57,144 @@ var mObj_import_shapeFile = function mObj_import_shapeFile( file ){
     // convert shapefile to geoJSON format and store in variable  'data'
 
     // render geoJSON format as table
+=======
+var mObj_frame = function mObj_frame( origin, xaxis, yaxis, zaxis ){
+
+    mObj.call(this, 'frame');
+
+    // compute missing axes - follow cylic order to maintain consistency
+    if( xaxis == undefined )
+        xaxis = verb.core.Vec.cross( yaxis, zaxis );
+    else if( yaxis == undefined )
+        yaxis = verb.core.Vec.cross( zaxis, xaxis );
+    else if( zaxis == undefined )
+        zaxis = verb.core.Vec.cross( xaxis, yaxis );
+
+    // creating unit vectors
+    var _xaxis = verb.core.Vec.normalized( xaxis ); 
+    var _yaxis = verb.core.Vec.normalized( yaxis ); 
+    var _zaxis = verb.core.Vec.normalized( zaxis ); 
+
+    function invertMatrix(m) {
+          
+          var r = [16]; 
+
+          r[0] = m[1][1]*m[2][2]*m[3][3] - m[1][1]*m[3][2]*m[2][3] - m[1][2]*m[2][1]*m[3][3] + m[1][2]*m[3][1]*m[2][3] + m[1][3]*m[2][1]*m[3][2] - m[1][3]*m[3][1]*m[2][2];
+          r[1] = -m[0][1]*m[2][2]*m[3][3] + m[0][1]*m[3][2]*m[2][3] + m[0][2]*m[2][1]*m[3][3] - m[0][2]*m[3][1]*m[2][3] - m[0][3]*m[2][1]*m[3][2] + m[0][3]*m[3][1]*m[2][2];
+          r[2] = m[0][1]*m[1][2]*m[3][3] - m[0][1]*m[3][2]*m[1][3] - m[0][2]*m[1][1]*m[3][3] + m[0][2]*m[3][1]*m[1][3] + m[0][3]*m[1][1]*m[3][2] - m[0][3]*m[3][1]*m[1][2] ;
+          r[3] = -m[0][1]*m[1][2]*m[2][3] + m[0][1]*m[2][2]*m[1][3] + m[0][2]*m[1][1]*m[2][3] - m[0][2]*m[2][1]*m[1][3] - m[0][3]*m[1][1]*m[2][2] + m[0][3]*m[2][1]*m[1][2] ;
+
+          r[4] = -m[1][0]*m[2][2]*m[3][3] + m[1][0]*m[3][2]*m[2][3] + m[1][2]*m[2][0]*m[3][3] - m[1][2]*m[3][0]*m[2][3] - m[1][3]*m[2][0]*m[3][2] + m[1][3]*m[3][0]*m[2][2];
+          r[5] = m[0][0]*m[2][2]*m[3][3] - m[0][0]*m[3][2]*m[2][3] - m[0][2]*m[2][0]*m[3][3] + m[0][2]*m[3][0]*m[2][3] + m[0][3]*m[2][0]*m[3][2] - m[0][3]*m[3][0]*m[2][2];
+          r[6] = -m[0][0]*m[1][2]*m[3][3] + m[0][0]*m[3][2]*m[1][3] + m[0][2]*m[1][0]*m[3][3] - m[0][2]*m[3][0]*m[1][3] - m[0][3]*m[1][0]*m[3][2] + m[0][3]*m[3][0]*m[1][2] ;
+          r[7] = m[0][0]*m[1][2]*m[2][3] - m[0][0]*m[2][2]*m[1][3] - m[0][2]*m[1][0]*m[2][3] + m[0][2]*m[2][0]*m[1][3] + m[0][3]*m[1][0]*m[2][2] - m[0][3]*m[2][0]*m[1][2] ;
+
+          r[8] = m[1][0]*m[2][1]*m[3][3] - m[1][0]*m[3][1]*m[2][3] - m[1][1]*m[2][0]*m[3][3] + m[1][1]*m[3][0]*m[2][3] + m[1][3]*m[2][0]*m[3][1] - m[1][3]*m[3][0]*m[2][1] ;
+          r[9] = -m[0][0]*m[2][1]*m[3][3] + m[0][0]*m[3][1]*m[2][3] + m[0][1]*m[2][0]*m[3][3] - m[0][1]*m[3][0]*m[2][3] - m[0][3]*m[2][0]*m[3][1] + m[0][3]*m[3][0]*m[2][1] ;
+          r[10] = m[0][0]*m[1][1]*m[3][3] - m[0][0]*m[3][1]*m[1][3] - m[0][1]*m[1][0]*m[3][3] + m[0][1]*m[3][0]*m[1][3] + m[0][3]*m[1][0]*m[3][1] - m[0][3]*m[3][0]*m[1][1] ;
+          r[11] = -m[0][0]*m[1][1]*m[2][3] + m[0][0]*m[2][1]*m[1][3] + m[0][1]*m[1][0]*m[2][3] - m[0][1]*m[2][0]*m[1][3] - m[0][3]*m[1][0]*m[2][1] + m[0][3]*m[2][0]*m[1][1] ;
+
+          r[12] = -m[1][0]*m[2][1]*m[3][2] + m[1][0]*m[3][1]*m[2][2] + m[1][1]*m[2][0]*m[3][2] - m[1][1]*m[3][0]*m[2][2] - m[1][2]*m[2][0]*m[3][1] + m[1][2]*m[3][0]*m[2][1] ;
+          r[13] = m[0][0]*m[2][1]*m[3][2] - m[0][0]*m[3][1]*m[2][2] - m[0][1]*m[2][0]*m[3][2] + m[0][1]*m[3][0]*m[2][2] + m[0][2]*m[2][0]*m[3][1] - m[0][2]*m[3][0]*m[2][1] ;
+          r[14] = -m[0][0]*m[1][1]*m[3][2] + m[0][0]*m[3][1]*m[1][2] + m[0][1]*m[1][0]*m[3][2] - m[0][1]*m[3][0]*m[1][2] - m[0][2]*m[1][0]*m[3][1] + m[0][2]*m[3][0]*m[1][1] ;
+          r[15] = m[0][0]*m[1][1]*m[2][2] - m[0][0]*m[2][1]*m[1][2] - m[0][1]*m[1][0]*m[2][2] + m[0][1]*m[2][0]*m[1][2] + m[0][2]*m[1][0]*m[2][1] - m[0][2]*m[2][0]*m[1][1] ;
+
+          var det = m[0][0]*r[0] + m[0][1]*r[4] + m[0][2]*r[8] + m[0][3]*r[12];
+          for (var i = 0; i < 16; i++) r[i] /= det;
+          
+          return [ [ r[0], r[1], r[2], r[3]],
+                        [ r[4], r[5], r[6], r[7]],
+                            [ r[8], r[9], r[10], r[11]],
+                                [ r[12], r[13], r[14], r[15] ]
+                    ];
+    };
+
+
+    // compute translation
+    var mat_trans = [ [ 1, 0, 0, origin[0] ],
+                        [ 0, 1, 0, origin[1] ],
+                            [ 0, 0, 1, origin[2] ],
+                                [ 0, 0, 0, 1 ]
+      
+                        ]; 
+
+    var world_space_matrix = [ [ _xaxis[0], _xaxis[1], _xaxis[2], 0 ], 
+                                  [ _yaxis[0], _yaxis[1], _yaxis[2], 0 ], 
+                                    [ _zaxis[0], _zaxis[1], _zaxis[2], 0 ],
+                                      [ 0, 0, 0, 1 ] ]
+
+    var local_space_matrix = invertMatrix( world_space_matrix );
+                        
+    var planes = { 'xy' : {'a': _zaxis[0], 'b': _zaxis[1], 'c': _zaxis[2], 'd':_zaxis[0]*origin[0] + _zaxis[1]*origin[1] + _zaxis[2]*origin[2] }, 
+                        'yz' : {'a': _xaxis[0], 'b': _xaxis[1], 'c': _xaxis[2], 'd':_xaxis[0]*origin[0] + _xaxis[1]*origin[1] + _xaxis[2]*origin[2] },
+                            'zx' : {'a': _yaxis[0], 'b': _yaxis[1], 'c': _yaxis[2], 'd':_yaxis[0]*origin[0] + _yaxis[1]*origin[1] + _yaxis[2]*origin[2] }
+    }    
+
+    this.toLocal = function( ){ 
+       return local_space_matrix; 
+    }
+
+    this.toGlobal = function(){
+        return world_space_matrix;
+    }
+
+    this.getPlane = function(id){
+        return planes[id];
+    }
+
+    this.extractThreeGeometry = function(){
+
+        function buildAxis( src, dst, colorHex, dashed ) {
+            var geom = new THREE.Geometry(),
+                mat; 
+
+            if(dashed) {
+                    mat = new THREE.LineDashedMaterial({ linewidth: 3, color: colorHex, dashSize: 3, gapSize: 3 });
+            } else {
+                    mat = new THREE.LineBasicMaterial({ linewidth: 3, color: colorHex });
+            }
+
+            geom.vertices.push( src.clone() );
+            geom.vertices.push( dst.clone() ); 
+            geom.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
+
+            var axis = new THREE.Line( geom, mat, THREE.LineSegments );
+
+            return axis;
+
+        }
+
+        function buildAxes( length ) {
+            var axes = new THREE.Object3D();
+            
+            axes.is_mObj = true;
+
+            var or = new THREE.Vector3( origin[0], origin[1], origin[2] )
+            var pos_x = new THREE.Vector3( origin[0] + length*_xaxis[0],  origin[1]+length*_xaxis[1],  origin[2]+length*_xaxis[2] );
+            var neg_x = new THREE.Vector3( origin[0] - length*_xaxis[0],  origin[1]-length*_xaxis[1],  origin[2]-length*_xaxis[2] );
+            var pos_y = new THREE.Vector3( origin[0] + length*_yaxis[0],  origin[1]+length*_yaxis[1],  origin[2]+length*_yaxis[2] );
+            var neg_y = new THREE.Vector3( origin[0] - length*_yaxis[0],  origin[1]-length*_yaxis[1],  origin[2]-length*_yaxis[2] );
+            var pos_z = new THREE.Vector3( origin[0] + length*_zaxis[0],  origin[1]+length*_zaxis[1],  origin[2]+length*_zaxis[2] );
+            var neg_z = new THREE.Vector3( origin[0] - length*_zaxis[0],  origin[1]-length*_zaxis[1],  origin[2]-length*_zaxis[2] );
+
+            axes.add( buildAxis( or, pos_x, 0x990000, false ) ); // +X
+            axes.add( buildAxis( or, neg_x, 0x990000, true ) ); // -X
+            axes.add( buildAxis( or, pos_y, 0x009900, false ) ); // +Y
+            axes.add( buildAxis( or, neg_y, 0x009900, true ) ); // -Y
+            axes.add( buildAxis( or, pos_z, 0x0000CC, false ) ); // +Z
+            axes.add( buildAxis( or, neg_z, 0x0000CC, true ) ); // -Z
+
+            return axes;
+
+        }
+
+        return buildAxes( 20 );
+    }
+
+    this.extractData = function(){
+        return 'frame';
+    }
+>>>>>>> verbs_new
 
 }
 
@@ -83,7 +222,7 @@ var mObj_geom = function mObj_geom( geometry, material ){
         threeTopology = undefined;
     }
 
-     //
+    //
     // get & set functions
     //
     this.getGeometry = function(){
@@ -97,7 +236,7 @@ var mObj_geom = function mObj_geom( geometry, material ){
 
     this.getTopology = function(){
         if(topology == undefined)
-            topology = computeTopology( self );
+            topology = computeTopology( self );       
         return topology;
     }
     
@@ -123,26 +262,17 @@ var mObj_geom = function mObj_geom( geometry, material ){
         console.log("Material updated");
     }
 
-    // needs a TOPOLOGY_DEF - make dynamic later  
-        // self[property] = self.getTopology()[property];
-        Object.defineProperty(this, "vertices", {
-            get: function(){ 
-                    return this.getTopology()[ "vertices" ];
-                },
-            set: undefined
+    // Dynamic Topology !
+   for(var property in TOPOLOGY_DEF){
+       
+        var propFunc = new Function( 'return this.getTopology()["' + property + '"];' );
+       
+        Object.defineProperty(this, property,  {
+                get: propFunc,
+                set: undefined
         });
-                Object.defineProperty(this, "edges", {
-                        get: function(){ 
-                                return this.getTopology()[ "edges" ];
-                            },
-                        set: undefined
-                    });
-                            Object.defineProperty(this, "faces", {
-                                    get: function(){ 
-                                            return this.getTopology()[ "faces" ];
-                                        },
-                                    set: undefined
-                                });
+   }
+
 
 
     //
@@ -257,18 +387,18 @@ var mObj_geom = function mObj_geom( geometry, material ){
 var mObj_geom_Vertex = function mObj_geom_Vertex( geometry ){
    var defaultVertexMaterial = new THREE.PointsMaterial( { size: 5, sizeAttenuation: false } );
     
-    mObj_geom.call( this, geometry, defaultVertexMaterial ); 
+    mObj_geom.call( this, geometry, defaultVertexMaterial  ); 
 }
  
 var mObj_geom_Curve = function mObj_geom_Curve( geometry ){
-	
+    
     var defaultCurveMaterial = new THREE.LineBasicMaterial({
     side: THREE.DoubleSide,
     linewidth: 100,
     color: 0x003399
     });
 	
-    mObj_geom.call( this, geometry, defaultCurveMaterial ); 
+    mObj_geom.call( this, geometry, defaultCurveMaterial  ); 
 	
 }
 
@@ -282,11 +412,11 @@ var mObj_geom_Surface = function mObj_geom_Surface( geometry ){
     color: 0x003399
     } );
 
-	mObj_geom.call( this, geometry, defaultSurfaceMaterial );
+	mObj_geom.call( this, geometry, defaultSurfaceMaterial  );
 
 }
 
-var mObj_geom_Solid = function mObj_geom_Solid( geometry ){
+var mObj_geom_Solid = function mObj_geom_Solid( geometry){
 	
     var defaultSolidMaterial = new THREE.MeshLambertMaterial( {
     side: THREE.DoubleSide,

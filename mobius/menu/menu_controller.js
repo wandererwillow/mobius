@@ -35,7 +35,10 @@ vidamo.controller('menuCtrl',['$scope','$rootScope','$timeout','consoleMsg','gen
                         },0);
                     }
 
-                    // reset procedure / interface / graph and refresh viewport
+
+                        $rootScope.$broadcast('clearProcedure');
+
+                        // reset procedure / interface / graph and refresh viewport
                     generateCode.setChartViewModel(new flowchart.ChartViewModel({
                             "nodes": [],
                             "connections": []
@@ -72,6 +75,9 @@ vidamo.controller('menuCtrl',['$scope','$rootScope','$timeout','consoleMsg','gen
                 }
             }).success(
                 function(response) {
+
+                    $rootScope.$broadcast('clearProcedure');
+
                     var graphJsonString;
                     var procedureJsonString;
                     var interfaceJsonString;
@@ -91,6 +97,38 @@ vidamo.controller('menuCtrl',['$scope','$rootScope','$timeout','consoleMsg','gen
                     generateCode.setChartViewModel(new flowchart.ChartViewModel(graphJsonObj));
                     generateCode.setDataList(procedureJsonObj);
                     generateCode.setInterfaceList(interfaceJsonObj);
+
+                    // fixme modulization need
+                    // dynamically link input and output from graph and procedure
+                    for(var i =0; i < generateCode.getChartViewModel().nodes.length; i++){
+                        for(var j = 0 ; j < generateCode.getChartViewModel().nodes[i].outputConnectors.length; j++ ){
+                            for(var k = 0; k < generateCode.getDataList()[i].length; k++){
+                                if(generateCode.getDataList()[i][k].title === 'Output'){
+                                    if(generateCode.getChartViewModel().nodes[i].outputConnectors[j].data.id
+                                        === generateCode.getDataList()[i][k].id ){
+                                        generateCode.getChartViewModel().nodes[i].outputConnectors[j].data =
+                                            generateCode.getDataList()[i][k];
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                    for(var i =0; i < generateCode.getChartViewModel().nodes.length; i++) {
+                        for (var j = 0; j < generateCode.getChartViewModel().nodes[i].inputConnectors.length; j++) {
+                            for (var k = 0; k < generateCode.getInterfaceList()[i].length; k++) {
+                                if (generateCode.getInterfaceList()[i][k].title === 'Input') {
+                                    if (generateCode.getChartViewModel().nodes[i].inputConnectors[j].data.id
+                                        === generateCode.getInterfaceList()[i][k].id) {
+                                        generateCode.getChartViewModel().nodes[i].inputConnectors[j].data =
+                                            generateCode.getInterfaceList()[i][k];
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     consoleMsg.confirmMsg('exampleImport');
                     generateCode.generateCode();
 
@@ -120,6 +158,8 @@ vidamo.controller('menuCtrl',['$scope','$rootScope','$timeout','consoleMsg','gen
             var interfaceJsonObj;
 
             var reader = new FileReader();
+
+            $rootScope.$broadcast('clearProcedure');
 
             reader.onload = (function () {
                 return function (e) {

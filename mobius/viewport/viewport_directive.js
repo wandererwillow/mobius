@@ -319,8 +319,6 @@ vidamo.directive('viewport', function factory() {
                         }
                     }
                 }
-
-                console.log('scene:   ',scene);
             };
 
             //
@@ -340,7 +338,7 @@ vidamo.directive('viewport', function factory() {
                     scope.internalControl.geometryData = scope.internalControl.geometryData.concat(singleGeomDataObject);
                 }
                 else{
-                    console.log("Vidamo doesn't recognise this type!");
+                    console.log("Mobius doesn't recognise this type!");
                 }
             };
         }
