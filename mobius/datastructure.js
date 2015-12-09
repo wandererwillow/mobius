@@ -16,7 +16,6 @@ var mObj = function mObj( type ){
 	}
 }
 
-<<<<<<< HEAD
 //
 // all imports like shapefile, obj, excels etc
 // might have data, or might have geometry or both
@@ -39,11 +38,11 @@ var mObj_import = function mObj_import( file_type, file ){
         update();
     }
 
-    this.extractThreeGeometry() = function(){
+    this.extractThreeGeometry = function(){
         console.log("This import has no geometry");
     }
 
-    this.extractData() = function(){
+    this.extractData = function(){
         console.log("This import has no data");
     }   
 
@@ -57,7 +56,11 @@ var mObj_import_shapeFile = function mObj_import_shapeFile( file ){
     // convert shapefile to geoJSON format and store in variable  'data'
 
     // render geoJSON format as table
-=======
+}
+
+//
+// frames
+//
 var mObj_frame = function mObj_frame( origin, xaxis, yaxis, zaxis ){
 
     mObj.call(this, 'frame');
@@ -194,7 +197,6 @@ var mObj_frame = function mObj_frame( origin, xaxis, yaxis, zaxis ){
     this.extractData = function(){
         return 'frame';
     }
->>>>>>> verbs_new
 
 }
 
