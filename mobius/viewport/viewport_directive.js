@@ -51,8 +51,11 @@ vidamo.directive('viewport', function factory() {
                     FAR = 10000;
 
                 camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-                camera.position.set(-120, 60, 200);
+                camera.position.set(-120, -200, 60);
+                // z up
+                camera.up.set( 0, 0, 1 );
                 camera.lookAt( scene.position );
+
 
                 orthoCamera = new THREE.OrthographicCamera(
                     VIEWPORT_WIDTH / -2,		// Left
@@ -61,6 +64,8 @@ vidamo.directive('viewport', function factory() {
                     VIEWPORT_HEIGHT / -2,	    // Bottom
                     -2000,            			// Near
                     5000 );           			// Far
+                orthoCamera.up.set( 0, 0, 1 );
+
 
                 // prepare renderer
                 renderer = new THREE.WebGLRenderer({antialias:true, alpha: false});
@@ -103,8 +108,8 @@ vidamo.directive('viewport', function factory() {
                 var gridHelper = new THREE.GridHelper(100, 10); // 100 is grid size, 10 is grid step
                 gridHelper.name = 'helper';
                 gridHelper.setColors(0x999999,0xaaaaaa);
+                gridHelper.rotation.x = Math.PI/2;//new THREE.Euler(0, 0 ,   0);
                 gridHelper.position = new THREE.Vector3(0, 0, 0);
-                gridHelper.rotation = new THREE.Euler(0, 0, 0);
                 scene.add(gridHelper);
             }
 
@@ -129,7 +134,7 @@ vidamo.directive('viewport', function factory() {
                 controls = controlsOrtho;
                 scene.add(orthoCamera);
                 controlsOrtho.enableRotate = false;
-                orthoCamera.position.set(0,1000,0);
+                orthoCamera.position.set(0,0,1000);
                 orthoCamera.lookAt( scene.position );
                 orthographic = true;
             };
@@ -141,7 +146,7 @@ vidamo.directive('viewport', function factory() {
 
                 controlsOrtho.reset();
 
-                orthoCamera.position.set(0,-1000,0);
+                orthoCamera.position.set(0,0,-1000);
                 orthoCamera.lookAt( scene.position );
                 scene.add(orthoCamera);
                 controlsOrtho.enableRotate = false;
@@ -155,7 +160,7 @@ vidamo.directive('viewport', function factory() {
 
                 controlsOrtho.reset();
 
-                orthoCamera.position.set(0,0,1000);
+                orthoCamera.position.set(0,-1000,0);
                 orthoCamera.lookAt( scene.position );
                 scene.add(orthoCamera);
                 controlsOrtho.enableRotate = false;
@@ -169,7 +174,7 @@ vidamo.directive('viewport', function factory() {
 
                 controlsOrtho.reset();
 
-                orthoCamera.position.set(0,0,-1000);
+                orthoCamera.position.set(0,1000,0);
                 orthoCamera.lookAt( scene.position );
                 scene.add(orthoCamera);
                 controlsOrtho.enableRotate = false;

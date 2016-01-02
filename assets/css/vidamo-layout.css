@@ -25,11 +25,10 @@ body {
     padding-bottom: 2px;
     padding-left: 10px;
    background:-webkit-gradient(linear, left bottom, left top, color-stop(0, #eee), color-stop(1, #fff));
-
 }
 
 .dropdown{
-    z-index: 999;
+    z-index: 75;
 }
 
 .dropdown-menu {

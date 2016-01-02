@@ -4,7 +4,7 @@ var vidamo = angular.module('vidamo',
                             [
                                 //'ngMaterial',
                                 'ui.layout',
-                                 'ui.ace',
+                                'ui.ace',
                                 'ui.bootstrap',
                                 'ui.select',
                                 'ngSanitize',
@@ -19,7 +19,8 @@ var vidamo = angular.module('vidamo',
                                 'cfp.hotkeys',
                                 'ngMaterial',
                                 'ngRoute',
-                                'ng-context-menu'
+                                'ng-context-menu',
+                                'decipher.history'
                             ]);
 
     vidamo.filter('propsFilter', function() {
@@ -152,6 +153,26 @@ var vidamo = angular.module('vidamo',
             result = [];
         return result;
     }
+
+
+
+    $(document).keydown(function(e) {
+        var doPrevent;
+        if (e.keyCode == 8) {
+            var d = e.srcElement || e.target;
+            if (d.tagName.toUpperCase() == 'INPUT' || d.tagName.toUpperCase() == 'TEXTAREA') {
+                doPrevent = d.readOnly || d.disabled;
+            }
+            else
+                doPrevent = true;
+        }
+        else
+            doPrevent = false;
+
+
+        if (doPrevent)
+            e.preventDefault();
+    });
 
 
 

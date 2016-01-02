@@ -11,9 +11,26 @@ var mObj = function mObj( type ){
 	
     this.is_mObj = true; 
 
+    id = guid();
+
+    // code from http://stackoverflow.com/questions/2020670/javascript-object-id
+    function guid() {
+          function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+              .toString(16)
+              .substring(1);
+          }
+          return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
+
 	this.getType = function(){
 		return type;
 	}
+
+    this.getID = function(){
+        return id;
+    }
 }
 
 //
@@ -114,24 +131,37 @@ var mObj_frame = function mObj_frame( origin, xaxis, yaxis, zaxis ){
 
 
     // compute translation
-    var mat_trans = [ [ 1, 0, 0, origin[0] ],
-                        [ 0, 1, 0, origin[1] ],
-                            [ 0, 0, 1, origin[2] ],
+    var mat_trans = [ [ 1, 0, 0, -origin[0] ],
+                        [ 0, 1, 0, -origin[1] ],
+                            [ 0, 0, 1, -origin[2] ],
                                 [ 0, 0, 0, 1 ]
       
                         ]; 
 
-    var world_space_matrix = [ [ _xaxis[0], _xaxis[1], _xaxis[2], 0 ], 
-                                  [ _yaxis[0], _yaxis[1], _yaxis[2], 0 ], 
-                                    [ _zaxis[0], _zaxis[1], _zaxis[2], 0 ],
-                                      [ 0, 0, 0, 1 ] ]
+    var mat_trans_inv = [ [ 1, 0, 0, origin[0] ],
+                            [ 0, 1, 0, origin[1] ],
+                                [ 0, 0, 1, origin[2] ],
+                                    [ 0, 0, 0, 1 ]
+                    ]; 
 
+    var world_space_matrix = [ [ _xaxis[0], _xaxis[1], _xaxis[2], 0], 
+                                  [ _yaxis[0], _yaxis[1], _yaxis[2], 0], 
+                                    [ _zaxis[0], _zaxis[1], _zaxis[2], 0],
+                                      [ 0, 0, 0, 1 ] ]
+    
+    world_space_matrix = verb.core.Mat.mult(world_space_matrix, mat_trans);
+    
     var local_space_matrix = invertMatrix( world_space_matrix );
+
+
                         
     var planes = { 'xy' : {'a': _zaxis[0], 'b': _zaxis[1], 'c': _zaxis[2], 'd':_zaxis[0]*origin[0] + _zaxis[1]*origin[1] + _zaxis[2]*origin[2] }, 
                         'yz' : {'a': _xaxis[0], 'b': _xaxis[1], 'c': _xaxis[2], 'd':_xaxis[0]*origin[0] + _xaxis[1]*origin[1] + _xaxis[2]*origin[2] },
                             'zx' : {'a': _yaxis[0], 'b': _yaxis[1], 'c': _yaxis[2], 'd':_yaxis[0]*origin[0] + _yaxis[1]*origin[1] + _yaxis[2]*origin[2] }
-    }    
+    }  
+
+
+
 
     this.toLocal = function( ){ 
        return local_space_matrix; 
@@ -143,6 +173,22 @@ var mObj_frame = function mObj_frame( origin, xaxis, yaxis, zaxis ){
 
     this.getPlane = function(id){
         return planes[id];
+    }
+
+    this.getOrigin = function(){
+        return origin;
+    }
+
+    this.getXaxis = function(){
+        return _xaxis;
+    }
+
+    this.getYaxis = function(){
+        return _yaxis;
+    }
+
+    this.getZaxis = function(){
+        return _zaxis;
     }
 
     this.extractThreeGeometry = function(){
@@ -192,6 +238,10 @@ var mObj_frame = function mObj_frame( origin, xaxis, yaxis, zaxis ){
         }
 
         return buildAxes( 20 );
+    }
+
+    this.extractTopology = function(){
+        return null;
     }
 
     this.extractData = function(){
@@ -289,9 +339,9 @@ var mObj_geom = function mObj_geom( geometry, material ){
         // if threeGeometry hasn't been computed before or native geometry has been transformed so that new conversion is required
         // the function defines it and caches it
         if( threeGeometry == undefined ){
-            
-            // means it is a solid
-            if( geometry instanceof Array){
+           
+            // means it is a solid 
+            if( geometry instanceof Array && (geometry[0] instanceof mObj_geom_Surface)){
                 var threeGeometry = new THREE.Object3D(); 
                 for(var srf=0; srf < geometry.length; srf++){
                     var geom = geometry[srf];
@@ -299,7 +349,7 @@ var mObj_geom = function mObj_geom( geometry, material ){
                     if(material)
                         exGeom.material = material;
                     threeGeometry.add( exGeom ); 
-                }
+                } 
             }else{
                 threeGeometry = convertGeomToThree( geometry );  // calls a function in the module to convert native geom into accepted three format
                 if(material)
@@ -387,9 +437,14 @@ var mObj_geom = function mObj_geom( geometry, material ){
 }
 
 var mObj_geom_Vertex = function mObj_geom_Vertex( geometry ){
-   var defaultVertexMaterial = new THREE.PointsMaterial( { size: 5, sizeAttenuation: false } );
-    
+
+    var defaultVertexMaterial = new THREE.PointsMaterial( { size: 5, sizeAttenuation: false } );
+    //console.log(geometry);
     mObj_geom.call( this, geometry, defaultVertexMaterial  ); 
+
+    this.x = geometry[0];
+    this.y = geometry[1];
+    this.z = geometry[2];
 }
  
 var mObj_geom_Curve = function mObj_geom_Curve( geometry ){
