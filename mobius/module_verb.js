@@ -1936,15 +1936,66 @@ var MOBIUS = ( function (mod){
 	//
 	//
 	mod.import = {}; 
-	mod.import.loadShapeFile = function ( data ){
+	mod.import.loadShapeFile = function ( exampleNumber ){
 
-		  var map;
-		  var shp;
-		  var dbf;
+			var map;
+		    var shp;
+		    var dbf;
+
+
+		  var pnt_example = 'gis.osm_traffic_v06';
+
+		  var shpfile;
+		  if( exampleNumber == 1 )
+		  	shpfile = 'mobius/shapefiles_dresden/' + pnt_example;
+
+	      SHPParser.load(shpfile + '.shp', shpLoad, shpLoadError);
+	      DBFParser.load(shpfile + '.dbf', dbfLoad, dbfLoadError);
 	      
-	      function createMarker(point,info) {
-	        var iconURL = '../cone.png';				var iconSize = new google.maps.Size(20,34);
-	        var iconOrigin = new google.maps.Point(0,0);	var iconAnchor = new google.maps.Point(10,34);
+	      function shpLoadError() {
+	        window.console.log('shp file failed to load');
+	      }
+
+	      // error handler for dbfloader.
+	      function dbfLoadError() {
+	        console.log('dbf file failed to load');
+	      }
+
+	      // Handles the callback from loading DBFParser by assigning the dbf to a global.
+	      function dbfLoad(db) {
+	        dbf = db;
+	        if (dbf && shp) {
+	          render();
+	        }
+	      }
+
+	      // Handles the callback from loading SHPParser by assigning the shp to a global.
+	      function shpLoad(sh) {
+	        shp = sh;
+	        if (dbf && shp) {
+	          render();
+	        }
+	      }
+
+	      function render() {
+			pts=[];
+	        for (var i = 0; i < 100/*shp.records.length*/; i++) {
+	          var shape = shp.records[i].shape;
+	          //console.log(shape.content);
+
+	          var pt = new mObj_geom_Vertex(shape.content.y,shape.content.x);
+	          pts.push(pt);
+	          var dbfRecord = dbf.records[i];
+			  var name = dbfRecord["fclass"];
+			  console.log(name);
+	        }
+		  }
+
+	      /*function createMarker(point,info) {
+	        var iconURL = 'http://cdn.flaticon.com/svg/33/33622.svg';				
+	        var iconSize = new google.maps.Size(20,34);
+	        var iconOrigin = new google.maps.Point(0,0);	
+	        var iconAnchor = new google.maps.Point(10,34);
 
 	        var myIcon = new google.maps.MarkerImage(iconURL, iconSize, iconOrigin, iconAnchor);
 
@@ -2014,8 +2065,8 @@ var MOBIUS = ( function (mod){
 
 	          var pt = new google.maps.LatLng(shape.content.y,shape.content.x)
 	          var dbfRecord = dbf.records[i];
-			  var name = dbfRecord["NAME"];
-			  var pop = dbfRecord["POPULATION"];
+			  var name = dbfRecord["fclass"];
+			  var pop = dbfRecord["number"];
 			  var info = '<strong>' + name + '</strong><br />' + pop;
 			  createMarker(pt, info);
 	        }
@@ -2029,7 +2080,7 @@ var MOBIUS = ( function (mod){
 	      // error handler for dbfloader.
 	      function dbfLoadError() {
 	        console.log('dbf file failed to load');
-	      }
+	      }*/
 /*	var data = {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"OBJECTID":1,"LOT_KEY":"MK03-02485P","INC_CRC":"73960B9B","FMEL_UPD_D":"2015-09-21T00:00:00.000Z","X_ADDR":23381.2466,"Y_ADDR":29035.88,"SHAPE_Leng":8.77884353446,"SHAPE_Area":2.17080000077},"geometry":{"type":"Polygon","coordinates":[[[23381.62000000011,29034.519999999553],[23379.650000000373,29037.820000000298],[23382.46999999974,29035.300000000745],[23381.62000000011,29034.519999999553]]]}},
 					{"type":"Feature","properties":{"OBJECTID":2,"LOT_KEY":"MK20-02759V","INC_CRC":"256B177E","FMEL_UPD_D":"2015-09-21T00:00:00.000Z","X_ADDR":28208.9416,"Y_ADDR":41250.172,"SHAPE_Leng":97.2662908614,"SHAPE_Area":416.536549986},"geometry":{"type":"Polygon","coordinates":[[[28226.150000000373,41238.73000000045],[28224.419999999925,41237.01999999955],[28220.790000000037,41232.74000000022],[28191.570000000298,41257.47000000067],[28191.830000000075,41257.72000000067],[28200.139999999665,41264.91000000015],[28202.509999999776,41266.699999999255],[28226.150000000373,41238.73000000045]]]}},
 						{"type":"Feature","properties":{"OBJECTID":3,"LOT_KEY":"MK04-00514C","INC_CRC":"118A1D63","FMEL_UPD_D":"2015-09-21T00:00:00.000Z","X_ADDR":21893.4044,"Y_ADDR":34626.8145,"SHAPE_Leng":130.148409016,"SHAPE_Area":729.688199994},"geometry":{"type":"Polygon","coordinates":[[[21910.58999999985,34605.550000000745],[21874.730000000447,34621.169999999925],[21873.16000000015,34621.41000000015],[21873.44000000041,34621.77999999933],[21876.139999999665,34623.789999999106],[21879.790000000037,34626.00999999978],[21880.429999999702,34626.49000000022],[21880.91000000015,34628.08999999985],[21881.549999999814,34631.75999999978],[21882.349999999627,34633.18999999948],[21883.94000000041,34635.419999999925],[21885.21999999974,34638.9299999997],[21887.450000000186,34643.080000000075],[21890.16000000015,34646.90000000037],[21891.599999999627,34648.97000000067],[21893.349999999627,34652],[21894.41000000015,34653],[21895.040000000037,34651.960000000894],[21910.58999999985,34605.550000000745]]]}},
