@@ -2274,11 +2274,12 @@ var convertTopoToThree = function( topology ){
 	}
 
 	// convert faces
-	var topoSurfaceMaterial = new THREE.MeshLambertMaterial( {
+	var topoSurfaceMaterial = new THREE.MeshNormalMaterial( {
 									    side: THREE.DoubleSide,
 									    wireframe: false,
 									    shading: THREE.SmoothShading,
-									    transparent: false,
+									    transparent: true,
+									    opacity: 0.4,
 									    color: 0x6666FF
 									    } );
 	for(var f = 0; f < topology.faces.length; f++){ 

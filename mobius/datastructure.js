@@ -349,7 +349,7 @@ var mObj_geom = function mObj_geom( geometry, material ){
          * Add topology labels as sprite objects - should be according to parameter passed to extractTopology? 
          */
         var displayOption = 0; // 0->For all; 1->For Faces; 2->For Edges; 3->For Vertices (could also distinguish with colors)
-        console.log("Topology:", threeTopology);  // This is a 3D Object
+        //console.log("Topology:", threeTopology);  // This is a 3D Object
 
         var vGroup = new THREE.Group();
         var eGroup = new THREE.Group(); 
@@ -359,24 +359,34 @@ var mObj_geom = function mObj_geom( geometry, material ){
             var child = threeTopology.children[ childNo ];
 
             if(child instanceof THREE.Points ){
-                console.log("These are points")
+                //console.log("These are points")
                 for( var p=0; p < child.geometry.vertices.length; p++){
-                    console.log("this is the point", child.geometry.vertices[p].x, child.geometry.vertices[p].y, child.geometry.vertices[p].z );
-                    var vNo = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
-                    vNo.position.x = child.geometry.vertices[p].x;
+                    //console.log("this is the point", child.geometry.vertices[p].x, child.geometry.vertices[p].y, child.geometry.vertices[p].z );
+                    var vNo = makeTextSprite( p, 
+                    { fontsize: 1024, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0},
+                        textColor: {r:0, g:0, b:255, a:1.0} } );
+/*                    vNo.position.x = child.geometry.vertices[p].x;
                     vNo.position.y = child.geometry.vertices[p].y;
-                    vNo.position.z = child.geometry.vertices[p].z;
+                    vNo.position.z = child.geometry.vertices[p].z;*/
+                    vNo.position.set(  child.geometry.vertices[p].x, 
+                                            child.geometry.vertices[p].y, 
+                                                child.geometry.vertices[p].z );
                     vGroup.add( vNo );
                 }
             }
             else if(child instanceof THREE.Line){
-                console.log("This is edge ", eGroup.children.length);
+                //console.log("This is edge ", eGroup.children.length);
                 //add edge sprite
-                var edgeNo = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshNormalMaterial());
+                var edgeNo =  makeTextSprite( eGroup.children.length, 
+                    { fontsize: 1024, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0},
+                        textColor: {r:0, g:255, b:0, a:1.0} } );
                 // calculate midpoint and position the sprite
-                edgeNo.position.x = 0.5*(child.geometry.vertices[0].x + child.geometry.vertices[1].x);
+/*                edgeNo.position.x = 0.5*(child.geometry.vertices[0].x + child.geometry.vertices[1].x);
                 edgeNo.position.y = 0.5*(child.geometry.vertices[0].y + child.geometry.vertices[1].y);
-                edgeNo.position.z = 0.5*(child.geometry.vertices[0].z + child.geometry.vertices[1].z);
+                edgeNo.position.z = 0.5*(child.geometry.vertices[0].z + child.geometry.vertices[1].z);*/
+                edgeNo.position.set(  0.5*(child.geometry.vertices[0].x + child.geometry.vertices[1].x), 
+                                        0.5*(child.geometry.vertices[0].y + child.geometry.vertices[1].y), 
+                                            0.5*(child.geometry.vertices[0].z + child.geometry.vertices[1].z) );
                 eGroup.add( edgeNo );
             }
             else if(child instanceof THREE.Mesh){
@@ -384,7 +394,8 @@ var mObj_geom = function mObj_geom( geometry, material ){
                 //add face sprite
                 /*var faceNo = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshNormalMaterial());*/
                 var faceNo = makeTextSprite( fGroup.children.length, 
-                    { fontsize: 12, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0} } );
+                    { fontsize: 1024, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0},
+                        textColor: {r:255, g:0, b:0, a:1.0} } );
                
                 
                 // calculate the midpoint of the surface and position the sprite
@@ -407,7 +418,10 @@ var mObj_geom = function mObj_geom( geometry, material ){
                 var centroidY = y0 + ( bHeight / 2 )+ child.position.y;
                 var centroidZ = z0 + ( bDepth / 2 ) + child.position.z;
 
-                child.geometry.centroid = new THREE.Vector3(centroidX, centroidY, centroidZ);
+                // has to be moved out in the direction of normal
+                child.geometry.centroid = new THREE.Vector3(centroidX  /*+ (child.position.x < 0? -10 : 10)*/, 
+                                                            centroidY  /*+ (child.position.y < 0? -10 : 10)*/, 
+                                                            centroidZ  /*+ (child.position.z < 0? -10 : 10)*/);
 
 /*                faceNo.position.x =  child.geometry.centroid.x; 
                 faceNo.position.y =  child.geometry.centroid.y; 
@@ -588,7 +602,10 @@ function makeTextSprite( message, parameters )
         parameters["fontface"] : "Arial";
     
     var fontsize = parameters.hasOwnProperty("fontsize") ? 
-        parameters["fontsize"] : 12;
+        parameters["fontsize"] : 18;
+
+    var textColor = parameters.hasOwnProperty("textColor") ?
+        parameters["textColor"] : { r:0, g:0, b:0, a:1.0 };
     
     var borderThickness = parameters.hasOwnProperty("borderThickness") ? 
         parameters["borderThickness"] : 1;
@@ -600,8 +617,11 @@ function makeTextSprite( message, parameters )
         parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
 
     //var spriteAlignment = THREE.SpriteAlignment.topLeft;
-        
-    var canvas = document.createElement('canvas');
+
+       
+    var canvas = document.createElement('canvas'); 
+    canvas.width = 1024;
+    canvas.height = 1024;
     var context = canvas.getContext('2d');
     context.font = "Bold " + fontsize + "px " + fontface;
     
@@ -617,11 +637,12 @@ function makeTextSprite( message, parameters )
                                   + borderColor.b + "," + borderColor.a + ")";
 
     context.lineWidth = borderThickness;
-    roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+    //roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
     // 1.4 is extra height factor for text below baseline: g,j,p,q.
     
     // text color
-    context.fillStyle = "rgba(0, 0, 0, 1.0)";
+    context.fillStyle = "rgba(" + textColor.r + "," + textColor.g + ","
+                                  + textColor.b + "," + textColor.a + ")";
 
     context.fillText( message, borderThickness, fontsize + borderThickness);
     
@@ -632,7 +653,7 @@ function makeTextSprite( message, parameters )
     var spriteMaterial = new THREE.SpriteMaterial( 
         { map: texture/*, useScreenCoordinates: false*/ } );
     var sprite = new THREE.Sprite( spriteMaterial );
-    sprite.scale.set(100,50,1.0);
+    sprite.scale.set(4.0,2.0,10.0);
     return sprite;  
 }
 
