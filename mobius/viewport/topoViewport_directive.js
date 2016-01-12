@@ -26,6 +26,9 @@ vidamo.directive('topoViewport', function factoryTopo() {
                 renderer1LT, renderer1RT,renderer1LB,renderer1RB,
                 controls1,controls1LT,controls1RT,controls1LB,controls1RB;
 
+            // akm - topo labels 
+            //var scene2; 
+
             initTopo();
             animateTopo();
 
@@ -33,6 +36,9 @@ vidamo.directive('topoViewport', function factoryTopo() {
             function initTopo(){
                 // create scene1
                 scene1 = new THREE.Scene();
+
+                // akm - topo labels
+                scene2 = new THREE.Scene();
 
                 // prepare camera1
                 var VIEW_ANGLE = 45,
@@ -132,6 +138,16 @@ vidamo.directive('topoViewport', function factoryTopo() {
                 gridHelper1.position = new THREE.Vector3(0, 0, 0);
                 gridHelper1.rotation.x = Math.PI/2;//new THREE.Euler(0, 0 ,   0);
                 scene1.add(gridHelper1);
+
+
+
+                // akm - topolabels
+                renderer2 = new THREE.CSS3DRenderer();
+                renderer2.domElement.id = 'viewTopoLabels';
+                renderer2.setSize(VIEWPORT_WIDTH1, VIEWPORT_HEIGHT1); 
+/*                renderer2.domElement.style.position = 'absolute';
+                renderer2.domElement.style.top = 0;*/
+                
             }
 
 
@@ -164,9 +180,16 @@ vidamo.directive('topoViewport', function factoryTopo() {
                     document.getElementById("viewSingle1").style.display = "inline";
                     document.getElementById('topoContainer').appendChild(renderer1.domElement);
 
+                    //akm - topo-labels
+                    document.getElementById('topoContainer').appendChild(renderer2.domElement);
+
                     camera1.aspect = VIEWPORT_WIDTH1 / VIEWPORT_HEIGHT1;
                     camera1.updateProjectionMatrix ();
                     renderer1.setSize(VIEWPORT_WIDTH1, VIEWPORT_HEIGHT1);
+
+                    //akm - topo-labels
+                    renderer2.setSize(VIEWPORT_WIDTH1, VIEWPORT_HEIGHT1); 
+        
                 }else{
                     if(document.getElementById("singleView1")) {
                         document.getElementById("singleView1").style.display = "none";
@@ -225,7 +248,20 @@ vidamo.directive('topoViewport', function factoryTopo() {
                     document.getElementById('topoContainer').appendChild(renderer1.domElement);
                     document.getElementById("viewSingle1").style.display = "inline";
 
-                    renderer1.render(scene1, camera1);
+                    // akm - topo - labels 
+                    document.getElementById('topoContainer').appendChild(renderer2.domElement);
+                    document.getElementById('viewTopoLabels').style.display = "inline"; 
+
+                    scene2.children.map( function(group){ 
+                        group.children.map( function(div) { 
+                                // update div position
+                                console.log(div.position);
+                                //div.lookAt(camera1.position); 
+                            }); 
+                    });  
+                    renderer2.render(scene2, camera1);
+
+                    renderer1.render(scene1, camera1); 
                 }else{
                     if(document.getElementById("viewSingle1")) {
                         document.getElementById("viewSingle1").style.display = "none";
@@ -285,6 +321,9 @@ vidamo.directive('topoViewport', function factoryTopo() {
                         i--;
                     }
                 }
+
+                // akm - topo labels
+                scene2.remove(scene2.children);
             };
 
             //
@@ -293,11 +332,19 @@ vidamo.directive('topoViewport', function factoryTopo() {
             scope.internalControlTopo.addGeometryToScene = function(geom,value){
                 if(geom !== undefined && value !== undefined){
                     if(geom.constructor === Array){
-                        for(var i = 0; i< geom.length ;i++){
-                            scope.internalControlTopo.displayObject(value[i]);
+                        for(var i = 0; i< geom.length ;i++){ 
+                            scope.internalControlTopo.displayObject(value[i].topo); // akm - added .topo : topo-labels
+                            //akm - topo labels
+                            scope.internalControlTopo.displayObject(value[i].vertLabels); // akm - added .topo : topo-labels
+                            scope.internalControlTopo.displayObject(value[i].edgeLabels); // akm - added .topo : topo-labels
+                            scope.internalControlTopo.displayObject(value[i].faceLabels); // akm - added .topo : topo-labels
                         }
                     } else {
-                        scope.internalControlTopo.displayObject(value);
+                        scope.internalControlTopo.displayObject(value.topo); // akm - added .topo : topo-labels
+                        //akm - topo labels
+                        scope.internalControlTopo.displayObject(value.vertLabels); // akm - added .topo : topo-labels
+                        scope.internalControlTopo.displayObject(value.edgeLabels); // akm - added .topo : topo-labels
+                        scope.internalControlTopo.displayObject(value.faceLabels); // akm - added .topo : topo-labels
                     }
                 }
             };
@@ -305,14 +352,17 @@ vidamo.directive('topoViewport', function factoryTopo() {
             //
             // takes in single data object and categorizes and displays accordingly
             //
-            scope.internalControlTopo.displayObject = function(singleGeomObject){
+            scope.internalControlTopo.displayObject = function(singleGeomObject){ 
 
                 // update the 3d topo viewport
-                if(singleGeomObject instanceof THREE.Mesh
+                if( singleGeomObject instanceof THREE.Group){ // it's a label group - akm - topo-labels
+                    scene2.add(singleGeomObject);
+                }
+                else if(singleGeomObject instanceof THREE.Mesh
                     || singleGeomObject instanceof THREE.Line
                     || singleGeomObject instanceof THREE.Object3D){
                     scene1.add(singleGeomObject);
-                }
+                } 
                 else{
                     console.log("mobius doesn't recognise this type!");
                 }
