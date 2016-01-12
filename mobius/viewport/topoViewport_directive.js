@@ -145,8 +145,8 @@ vidamo.directive('topoViewport', function factoryTopo() {
                 renderer2 = new THREE.CSS3DRenderer();
                 renderer2.domElement.id = 'viewTopoLabels';
                 renderer2.setSize(VIEWPORT_WIDTH1, VIEWPORT_HEIGHT1); 
-/*                renderer2.domElement.style.position = 'absolute';
-                renderer2.domElement.style.top = 0;*/
+                renderer2.domElement.style.position = 'absolute';
+                renderer2.domElement.style.top = 0;
                 
             }
 
@@ -182,6 +182,7 @@ vidamo.directive('topoViewport', function factoryTopo() {
 
                     //akm - topo-labels
                     document.getElementById('topoContainer').appendChild(renderer2.domElement);
+                    document.getElementById("viewTopoLabels").style.display = "inline";
 
                     camera1.aspect = VIEWPORT_WIDTH1 / VIEWPORT_HEIGHT1;
                     camera1.updateProjectionMatrix ();
@@ -252,13 +253,13 @@ vidamo.directive('topoViewport', function factoryTopo() {
                     document.getElementById('topoContainer').appendChild(renderer2.domElement);
                     document.getElementById('viewTopoLabels').style.display = "inline"; 
 
-                    scene2.children.map( function(group){ 
+/*                    scene2.children.map( function(group){ 
                         group.children.map( function(div) { 
                                 // update div position
                                 console.log(div.position);
                                 //div.lookAt(camera1.position); 
                             }); 
-                    });  
+                    });  */
                     renderer2.render(scene2, camera1);
 
                     renderer1.render(scene1, camera1); 
