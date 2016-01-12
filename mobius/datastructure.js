@@ -390,7 +390,7 @@ var mObj_geom = function mObj_geom( geometry, material ){
                 eGroup.add( edgeNo );
             }
             else if(child instanceof THREE.Mesh){
-                console.log("This is face ", fGroup.children.length);
+                //console.log("This is face ", fGroup.children.length);
                 //add face sprite
                 /*var faceNo = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshNormalMaterial());*/
                 var faceNo = makeTextSprite( fGroup.children.length, 
@@ -620,9 +620,10 @@ function makeTextSprite( message, parameters )
 
        
     var canvas = document.createElement('canvas'); 
+    canvas.id = Math.random();
     canvas.width = 1024;
     canvas.height = 1024;
-    var context = canvas.getContext('2d');
+    var context = canvas.getContext('2d'); console.log(canvas);
     context.font = "Bold " + fontsize + "px " + fontface;
     
     // get size data (height depends only on font size)

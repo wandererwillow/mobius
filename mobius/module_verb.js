@@ -2274,7 +2274,7 @@ var convertTopoToThree = function( topology ){
 	}
 
 	// convert faces
-	var topoSurfaceMaterial = new THREE.MeshNormalMaterial( {
+	var topoSurfaceMaterial = new THREE.MeshBasicMaterial( {
 									    side: THREE.DoubleSide,
 									    wireframe: false,
 									    shading: THREE.SmoothShading,
