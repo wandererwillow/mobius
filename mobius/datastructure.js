@@ -620,9 +620,9 @@ function makeTextSprite( message, parameters )
 
        
     var canvas = document.createElement('canvas'); 
-    canvas.id = Math.random();
-    canvas.width = 1024;
-    canvas.height = 1024;
+    canvas.class = 'topo-label';
+    canvas.width = 2048;
+    canvas.height = 2048;
     var context = canvas.getContext('2d'); console.log(canvas);
     context.font = "Bold " + fontsize + "px " + fontface;
     
