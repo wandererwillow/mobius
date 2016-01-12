@@ -623,7 +623,7 @@ function makeTextSprite( message, parameters )
     canvas.class = 'topo-label';
     canvas.width = 2048;
     canvas.height = 2048;
-    var context = canvas.getContext('2d'); console.log(canvas);
+    var context = canvas.getContext('2d'); //console.log(canvas);
     context.font = "Bold " + fontsize + "px " + fontface;
     
     // get size data (height depends only on font size)
