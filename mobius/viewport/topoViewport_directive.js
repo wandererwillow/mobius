@@ -224,7 +224,7 @@ vidamo.directive('topoViewport', function factoryTopo() {
 
                     document.getElementById('topoContainer').appendChild(renderer1.domElement);
                     document.getElementById("viewSingle1").style.display = "inline";
-/*
+
                     //akm - topo-label
                     scene1.children.map( function(c){
                         if(c instanceof THREE.Object3D){
@@ -232,13 +232,12 @@ vidamo.directive('topoViewport', function factoryTopo() {
                                 if(labels instanceof THREE.Group){
                                     labels.children.map( function(l){
                                         l.lookAt(camera1); 
-                                        console.log(l);
                                     });      
                                 }                                   
                             })
                         }
                            
-                    });*/
+                    });
 
                     renderer1.render(scene1, camera1);
                 }else{
