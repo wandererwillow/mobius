@@ -348,7 +348,7 @@ var mObj_geom = function mObj_geom( geometry, material ){
         /*
          * Add topology labels as sprite objects - should be according to parameter passed to extractTopology? 
          */
-        var displayOption = 2; // 0->For all; 1->For Faces; 2->For Edges; 3->For Vertices (could also distinguish with colors)
+        var displayOption = 5; // 0->For all; 1->For Faces; 2->For Edges; 3->For Vertices (could also distinguish with colors)
         //console.log("Topology:", threeTopology);  // This is a 3D Object
 
         var vGroup = new THREE.Group();
@@ -358,14 +358,14 @@ var mObj_geom = function mObj_geom( geometry, material ){
 
             var child = threeTopology.children[ childNo ];
 
-            if(child instanceof THREE.Points && displayOption == 0){
+            if(child instanceof THREE.Points && (displayOption == 0 || displayOption == 5) ){
                 //console.log("These are points")
                 for( var p=0; p < child.geometry.vertices.length; p++){
                     var vNo = makeLabel( p, [ child.geometry.vertices[p].x, child.geometry.vertices[p].y, child.geometry.vertices[p].z ] ); // vNo is a css3dElement
                     vGroup.add( vNo );
                 }
             }
-            else if(child instanceof THREE.Line && displayOption == 1){
+            else if(child instanceof THREE.Line && (displayOption == 1 || displayOption == 5) ){
 
                 var edgeNo =  makeLabel( eGroup.children.length, [ 0.5*(child.geometry.vertices[0].x + child.geometry.vertices[1].x), 
                                                                     0.5*(child.geometry.vertices[0].y + child.geometry.vertices[1].y), 
@@ -373,7 +373,7 @@ var mObj_geom = function mObj_geom( geometry, material ){
                                                                         ] );
                 eGroup.add( edgeNo );
             }
-            else if(child instanceof THREE.Mesh && displayOption == 2){                           
+            else if(child instanceof THREE.Mesh && (displayOption == 2 || displayOption == 5) ){                           
                 
                 // calculate the midpoint of the surface and position the sprite
                 child.geometry.computeBoundingBox();
@@ -401,9 +401,9 @@ var mObj_geom = function mObj_geom( geometry, material ){
             }
         }
 
-        //threeTopology.add(vGroup);
-        //threeTopology.add(eGroup);
-        //threeTopology.add(fGroup);
+        threeTopology.add(vGroup);
+        threeTopology.add(eGroup);
+        threeTopology.add(fGroup);
 
         return { topo:threeTopology, vertLabels:vGroup, edgeLabels:eGroup, faceLabels:fGroup } ;
     }
@@ -574,7 +574,7 @@ makeLabel = function( text, position ){
       div.position.x = position[0];
       div.position.y = position[1];
       div.position.z = position[2];
-      div.rotation.y = Math.PI/2;
+      //div.rotation.y = Math.PI/2;
       div.rotation.x = Math.PI/2;
 
       return div;

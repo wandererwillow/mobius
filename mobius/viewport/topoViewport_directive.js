@@ -147,6 +147,8 @@ vidamo.directive('topoViewport', function factoryTopo() {
                 renderer2.setSize(VIEWPORT_WIDTH1, VIEWPORT_HEIGHT1); 
                 renderer2.domElement.style.position = 'absolute';
                 renderer2.domElement.style.top = 0;
+                controls_topo = new THREE.OrbitControls(camera1, renderer2.domElement);
+                controls_topo.target = new THREE.Vector3(0, 0, 0);
                 
             }
 
@@ -229,6 +231,9 @@ vidamo.directive('topoViewport', function factoryTopo() {
             function updateTopo() {
                 controls1.update();
 
+                // controls update
+                controls_topo.update();
+
                 controls1LT.update();
                 controls1RT.update();
                 controls1LB.update();
@@ -253,13 +258,12 @@ vidamo.directive('topoViewport', function factoryTopo() {
                     document.getElementById('topoContainer').appendChild(renderer2.domElement);
                     document.getElementById('viewTopoLabels').style.display = "inline"; 
 
-/*                    scene2.children.map( function(group){ 
+                    scene2.children.map( function(group){ 
                         group.children.map( function(div) { 
                                 // update div position
-                                console.log(div.position);
-                                //div.lookAt(camera1.position); 
+                                div.lookAt(camera1.position); 
                             }); 
-                    });  */
+                    });  
                     renderer2.render(scene2, camera1);
 
                     renderer1.render(scene1, camera1); 
