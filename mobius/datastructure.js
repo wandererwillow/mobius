@@ -460,7 +460,9 @@ var mObj_geom = function mObj_geom( geometry, material ){
 
                 faceNo = new THREE.Mesh( faceNo, new THREE.MeshBasicMaterial({color:'red'}) );
 
-                faceNo.position.set( child.geometry.centroid );
+                faceNo.position.x =  child.geometry.centroid.x;
+                faceNo.position.y =  child.geometry.centroid.y;
+                faceNo.position.z =  child.geometry.centroid.z;
 
                 faceNo.rotation.x = Math.PI/2;
 
