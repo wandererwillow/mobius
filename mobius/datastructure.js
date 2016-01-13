@@ -349,7 +349,7 @@ var mObj_geom = function mObj_geom( geometry, material ){
          * Add topology labels as sprite objects - should be according to parameter passed to extractTopology? 
          */
         var displayOption = 0; // 0->For all; 1->For Faces; 2->For Edges; 3->For Vertices (could also distinguish with colors)
-        //console.log("Topology:", threeTopology);  // This is a 3D Object
+
 
         var vGroup = new THREE.Group();
         var eGroup = new THREE.Group(); 
@@ -359,15 +359,12 @@ var mObj_geom = function mObj_geom( geometry, material ){
             var child = threeTopology.children[ childNo ];
 
             if(child instanceof THREE.Points ){
-                //console.log("These are points")
+
                 for( var p=0; p < child.geometry.vertices.length; p++){
-                    //console.log("this is the point", child.geometry.vertices[p].x, child.geometry.vertices[p].y, child.geometry.vertices[p].z );
+
                     var vNo = makeTextSprite( p, 
                     { fontsize: 1024, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0},
                         textColor: {r:0, g:0, b:255, a:1.0} } );
-/*                    vNo.position.x = child.geometry.vertices[p].x;
-                    vNo.position.y = child.geometry.vertices[p].y;
-                    vNo.position.z = child.geometry.vertices[p].z;*/
                     vNo.position.set(  child.geometry.vertices[p].x, 
                                             child.geometry.vertices[p].y, 
                                                 child.geometry.vertices[p].z );
@@ -380,19 +377,12 @@ var mObj_geom = function mObj_geom( geometry, material ){
                 var edgeNo =  makeTextSprite( eGroup.children.length, 
                     { fontsize: 1024, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0},
                         textColor: {r:0, g:255, b:0, a:1.0} } );
-                // calculate midpoint and position the sprite
-/*                edgeNo.position.x = 0.5*(child.geometry.vertices[0].x + child.geometry.vertices[1].x);
-                edgeNo.position.y = 0.5*(child.geometry.vertices[0].y + child.geometry.vertices[1].y);
-                edgeNo.position.z = 0.5*(child.geometry.vertices[0].z + child.geometry.vertices[1].z);*/
                 edgeNo.position.set(  0.5*(child.geometry.vertices[0].x + child.geometry.vertices[1].x), 
                                         0.5*(child.geometry.vertices[0].y + child.geometry.vertices[1].y), 
                                             0.5*(child.geometry.vertices[0].z + child.geometry.vertices[1].z) );
                 eGroup.add( edgeNo );
             }
             else if(child instanceof THREE.Mesh){
-                //console.log("This is face ", fGroup.children.length);
-                //add face sprite
-                /*var faceNo = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshNormalMaterial());*/
                 var faceNo = makeTextSprite( fGroup.children.length, 
                     { fontsize: 1024, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0},
                         textColor: {r:255, g:0, b:0, a:1.0} } );
@@ -419,13 +409,10 @@ var mObj_geom = function mObj_geom( geometry, material ){
                 var centroidZ = z0 + ( bDepth / 2 ) + child.position.z;
 
                 // has to be moved out in the direction of normal
-                child.geometry.centroid = new THREE.Vector3(centroidX  /*+ (child.position.x < 0? -10 : 10)*/, 
-                                                            centroidY  /*+ (child.position.y < 0? -10 : 10)*/, 
-                                                            centroidZ  /*+ (child.position.z < 0? -10 : 10)*/);
+                child.geometry.centroid = new THREE.Vector3(centroidX, 
+                                                            centroidY, 
+                                                            centroidZ);
 
-/*                faceNo.position.x =  child.geometry.centroid.x; 
-                faceNo.position.y =  child.geometry.centroid.y; 
-                faceNo.position.z =  child.geometry.centroid.z; */
                 faceNo.position.set(child.geometry.centroid.x,child.geometry.centroid.y,child.geometry.centroid.z);
 
                 fGroup.add( faceNo );
