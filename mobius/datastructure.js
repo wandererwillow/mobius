@@ -359,43 +359,76 @@ var mObj_geom = function mObj_geom( geometry, material ){
             var child = threeTopology.children[ childNo ];
 
             if(child instanceof THREE.Points ){
-                //console.log("These are points")
+
                 for( var p=0; p < child.geometry.vertices.length; p++){
-                    //console.log("this is the point", child.geometry.vertices[p].x, child.geometry.vertices[p].y, child.geometry.vertices[p].z );
-                    var vNo = makeTextSprite( p, 
-                    { fontsize: 1024, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0},
-                        textColor: {r:0, g:0, b:255, a:1.0} } );
-/*                    vNo.position.x = child.geometry.vertices[p].x;
+                    
+                    var vNo = new THREE.TextGeometry(p, 
+                                                        { 
+                                                            size:3 , 
+                                                            height:1, 
+                                                            curveSegments:1, 
+                                                            font:'optimer', 
+                                                            weight:'normal' , 
+                                                            bevelEnabled:false, 
+                                                            bevelThickness:0.1, 
+                                                            bevelSize:0.1
+                                                        } );
+
+                    vNo.computeBoundingBox();
+                    vNo.computeVertexNormals();
+
+                    vNo = new THREE.Mesh( vNo, new THREE.MeshBasicMaterial({color:'black'}) );
+
+                    vNo.position.x = child.geometry.vertices[p].x;
                     vNo.position.y = child.geometry.vertices[p].y;
-                    vNo.position.z = child.geometry.vertices[p].z;*/
-                    vNo.position.set(  child.geometry.vertices[p].x, 
-                                            child.geometry.vertices[p].y, 
-                                                child.geometry.vertices[p].z );
+                    vNo.position.z = child.geometry.vertices[p].z;
+
+                    vNo.rotation.x = Math.PI/2;
+
                     vGroup.add( vNo );
                 }
             }
             else if(child instanceof THREE.Line){
                 //console.log("This is edge ", eGroup.children.length);
-                //add edge sprite
-                var edgeNo =  makeTextSprite( eGroup.children.length, 
-                    { fontsize: 1024, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0},
-                        textColor: {r:0, g:255, b:0, a:1.0} } );
-                // calculate midpoint and position the sprite
-/*                edgeNo.position.x = 0.5*(child.geometry.vertices[0].x + child.geometry.vertices[1].x);
-                edgeNo.position.y = 0.5*(child.geometry.vertices[0].y + child.geometry.vertices[1].y);
-                edgeNo.position.z = 0.5*(child.geometry.vertices[0].z + child.geometry.vertices[1].z);*/
-                edgeNo.position.set(  0.5*(child.geometry.vertices[0].x + child.geometry.vertices[1].x), 
-                                        0.5*(child.geometry.vertices[0].y + child.geometry.vertices[1].y), 
-                                            0.5*(child.geometry.vertices[0].z + child.geometry.vertices[1].z) );
+                //add edge sprite 
+                var edgeNo =  new THREE.TextGeometry(eGroup.children.length, 
+                                                        { 
+                                                            size:3 , 
+                                                            height:1, 
+                                                            curveSegments:1, 
+                                                            font:'optimer', 
+                                                            weight:'normal', 
+                                                            bevelEnabled:false, 
+                                                            bevelThickness:0.1, 
+                                                            bevelSize:0.1
+                                                        });
+
+                edgeNo.computeBoundingBox();
+                edgeNo.computeVertexNormals();
+
+                edgeNo = new THREE.Mesh( edgeNo, new THREE.MeshBasicMaterial({color:'blue'}) );
+
+                edgeNo.position.x = 0.5*(child.geometry.vertices[0].x + child.geometry.vertices[1].x)
+                edgeNo.position.y = 0.5*(child.geometry.vertices[0].y + child.geometry.vertices[1].y)
+                edgeNo.position.z = 0.5*(child.geometry.vertices[0].z + child.geometry.vertices[1].z);
+
+                edgeNo.rotation.x = Math.PI/2;
+
                 eGroup.add( edgeNo );
             }
             else if(child instanceof THREE.Mesh){
-                //console.log("This is face ", fGroup.children.length);
-                //add face sprite
-                /*var faceNo = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshNormalMaterial());*/
-                var faceNo = makeTextSprite( fGroup.children.length, 
-                    { fontsize: 1024, fontface: "Arial", borderColor: {r:0, g:0, b:255, a:1.0},
-                        textColor: {r:255, g:0, b:0, a:1.0} } );
+                
+                var faceNo = new THREE.TextGeometry(fGroup.children.length, 
+                                                        { 
+                                                            size:3 , 
+                                                            height:1, 
+                                                            curveSegments:1, 
+                                                            font:'optimer', 
+                                                            weight:'normal', 
+                                                            bevelEnabled:false, 
+                                                            bevelThickness:0.1, 
+                                                            bevelSize:0.1
+                                                        });
                
                 
                 // calculate the midpoint of the surface and position the sprite
@@ -419,14 +452,17 @@ var mObj_geom = function mObj_geom( geometry, material ){
                 var centroidZ = z0 + ( bDepth / 2 ) + child.position.z;
 
                 // has to be moved out in the direction of normal
-                child.geometry.centroid = new THREE.Vector3(centroidX  /*+ (child.position.x < 0? -10 : 10)*/, 
-                                                            centroidY  /*+ (child.position.y < 0? -10 : 10)*/, 
-                                                            centroidZ  /*+ (child.position.z < 0? -10 : 10)*/);
+                child.geometry.centroid = new THREE.Vector3( centroidX, 
+                                                             centroidY, 
+                                                             centroidZ );
+                faceNo.computeBoundingBox();
+                faceNo.computeVertexNormals();
 
-/*                faceNo.position.x =  child.geometry.centroid.x; 
-                faceNo.position.y =  child.geometry.centroid.y; 
-                faceNo.position.z =  child.geometry.centroid.z; */
-                faceNo.position.set(child.geometry.centroid.x,child.geometry.centroid.y,child.geometry.centroid.z);
+                faceNo = new THREE.Mesh( faceNo, new THREE.MeshBasicMaterial({color:'red'}) );
+
+                faceNo.position.set( child.geometry.centroid );
+
+                faceNo.rotation.x = Math.PI/2;
 
                 fGroup.add( faceNo );
             }
