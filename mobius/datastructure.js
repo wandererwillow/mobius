@@ -565,18 +565,24 @@ var mObj_geom_Solid = function mObj_geom_Solid( geometry){
 
 makeLabel = function( text, position ){
 
-      var element = document.createElement('div');
-      element.innerHTML =  text;
-      element.className = 'three-div';
+    var element = document.createElement('div');
+    //element.innerHTML =  text;
+    element.className = 'three-div';
+    element.style.position = 'absolute';
+    //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+    element.style.width = 100;
+    element.style.height = 100;
+    element.style.backgroundColor = "blue";
+    element.innerHTML = "hi there!";
+ 
+    //CSS Object
+    var div = new THREE.CSS3DObject(element);
+    div.position.x = position[0];
+    div.position.y = position[1];
+    div.position.z = position[2];
+    div.rotation.y = Math.PI/2;
+    div.rotation.x = Math.PI/2;
 
-      //CSS Object
-      var div = new THREE.CSS3DObject(element);
-      div.position.x = position[0];
-      div.position.y = position[1];
-      div.position.z = position[2];
-      //div.rotation.y = Math.PI/2;
-      div.rotation.x = Math.PI/2;
-
-      return div;
+    return div;
 }
 
