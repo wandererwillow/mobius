@@ -354,6 +354,9 @@ var mObj_geom = function mObj_geom( geometry, material ){
         var vGroup = new THREE.Group();
         var eGroup = new THREE.Group(); 
         var fGroup = new THREE.Group();
+
+        var mergeGeometry = new THREE.Geometry(); 
+
         for( var childNo=0; childNo < threeTopology.children.length; childNo++ ){
 
             var child = threeTopology.children[ childNo ];
@@ -364,8 +367,8 @@ var mObj_geom = function mObj_geom( geometry, material ){
                     
                     var vNo = new THREE.TextGeometry(p, 
                                                         { 
-                                                            size:3 , 
-                                                            height:1, 
+                                                            size:1.5 , 
+                                                            height:0.2, 
                                                             curveSegments:1, 
                                                             font:'optimer', 
                                                             weight:'normal' , 
@@ -386,6 +389,9 @@ var mObj_geom = function mObj_geom( geometry, material ){
                     vNo.rotation.x = Math.PI/2;
 
                     vGroup.add( vNo );
+
+                    vNo.updateMatrix();
+                    mergeGeometry.merge(vNo.geometry, vNo.matrix);
                 }
             }
             else if(child instanceof THREE.Line){
@@ -393,8 +399,8 @@ var mObj_geom = function mObj_geom( geometry, material ){
                 //add edge sprite 
                 var edgeNo =  new THREE.TextGeometry(eGroup.children.length, 
                                                         { 
-                                                            size:3 , 
-                                                            height:1, 
+                                                            size:1.5 , 
+                                                            height:0.2, 
                                                             curveSegments:1, 
                                                             font:'optimer', 
                                                             weight:'normal', 
@@ -415,13 +421,17 @@ var mObj_geom = function mObj_geom( geometry, material ){
                 edgeNo.rotation.x = Math.PI/2;
 
                 eGroup.add( edgeNo );
+
+                edgeNo.updateMatrix();
+                mergeGeometry.merge(edgeNo.geometry, edgeNo.matrix);
+
             }
             else if(child instanceof THREE.Mesh){
                 
                 var faceNo = new THREE.TextGeometry(fGroup.children.length, 
                                                         { 
-                                                            size:3 , 
-                                                            height:1, 
+                                                            size:1.5 , 
+                                                            height:0.2, 
                                                             curveSegments:1, 
                                                             font:'optimer', 
                                                             weight:'normal', 
@@ -467,12 +477,20 @@ var mObj_geom = function mObj_geom( geometry, material ){
                 faceNo.rotation.x = Math.PI/2;
 
                 fGroup.add( faceNo );
+
+                faceNo.updateMatrix();
+                mergeGeometry.merge(faceNo.geometry, faceNo.matrix);
             }
         }
 
-        threeTopology.add(vGroup);
+        /*threeTopology.add(vGroup);
         threeTopology.add(eGroup);
-        threeTopology.add(fGroup);
+        threeTopology.add(fGroup);*/
+
+        var material = new THREE.MeshBasicMaterial({color: 'blue'});
+        var mesh = new THREE.Mesh(mergeGeometry, material);
+        mesh.name = 'labels';
+        threeTopology.add(mesh);
 
         return threeTopology;
     }
@@ -630,86 +648,3 @@ var mObj_geom_Solid = function mObj_geom_Solid( geometry){
 
 }
 
-
-
-function makeTextSprite( message, parameters )
-{
-    if ( parameters === undefined ) parameters = {};
-    
-    var fontface = parameters.hasOwnProperty("fontface") ? 
-        parameters["fontface"] : "Arial";
-    
-    var fontsize = parameters.hasOwnProperty("fontsize") ? 
-        parameters["fontsize"] : 18;
-
-    var textColor = parameters.hasOwnProperty("textColor") ?
-        parameters["textColor"] : { r:0, g:0, b:0, a:1.0 };
-    
-    var borderThickness = parameters.hasOwnProperty("borderThickness") ? 
-        parameters["borderThickness"] : 1;
-    
-    var borderColor = parameters.hasOwnProperty("borderColor") ?
-        parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
-    
-    var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
-        parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
-
-    //var spriteAlignment = THREE.SpriteAlignment.topLeft;
-
-       
-    var canvas = document.createElement('canvas'); 
-    canvas.class = 'topo-label';
-    canvas.width = 2048;
-    canvas.height = 2048;
-    var context = canvas.getContext('2d'); //console.log(canvas);
-    context.font = "Bold " + fontsize + "px " + fontface;
-    
-    // get size data (height depends only on font size)
-    var metrics = context.measureText( message );
-    var textWidth = metrics.width;
-    
-    // background color
-    context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
-                                  + backgroundColor.b + "," + backgroundColor.a + ")";
-    // border color
-    context.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
-                                  + borderColor.b + "," + borderColor.a + ")";
-
-    context.lineWidth = borderThickness;
-    //roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
-    // 1.4 is extra height factor for text below baseline: g,j,p,q.
-    
-    // text color
-    context.fillStyle = "rgba(" + textColor.r + "," + textColor.g + ","
-                                  + textColor.b + "," + textColor.a + ")";
-
-    context.fillText( message, borderThickness, fontsize + borderThickness);
-    
-    // canvas contents will be used for a texture
-    var texture = new THREE.Texture(canvas) 
-    texture.needsUpdate = true;
-
-    var spriteMaterial = new THREE.SpriteMaterial( 
-        { map: texture/*, useScreenCoordinates: false*/ } );
-    var sprite = new THREE.Sprite( spriteMaterial );
-    sprite.scale.set(4.0,2.0,10.0);
-    return sprite;  
-}
-
-// function for drawing rounded rectangles
-function roundRect(ctx, x, y, w, h, r) 
-{
-    ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.lineTo(x+w-r, y);
-    ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-    ctx.lineTo(x+w, y+h-r);
-    ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-    ctx.lineTo(x+r, y+h);
-    ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-    ctx.lineTo(x, y+r);
-    ctx.quadraticCurveTo(x, y, x+r, y);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();   
-}

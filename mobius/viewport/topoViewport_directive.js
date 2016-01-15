@@ -226,13 +226,11 @@ vidamo.directive('topoViewport', function factoryTopo() {
                     document.getElementById("viewSingle1").style.display = "inline";
 
                     //akm - topo-label
-                    scene1.children.map( function(c){
-                        if(c instanceof THREE.Object3D){
-                            c.children.map( function(labels){
-                                if(labels instanceof THREE.Group){
-                                    labels.children.map( function(l){
-                                        l.lookAt(camera1); 
-                                    });      
+                    scene1.children.map( function(c){ 
+                        if(c instanceof THREE.Object3D){ 
+                            c.children.map( function(obj){ 
+                                if(obj.name == 'labels'){ 
+                                    //???obj.lookAt( camera1.position );    
                                 }                                   
                             })
                         }
