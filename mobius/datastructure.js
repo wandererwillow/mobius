@@ -483,14 +483,14 @@ var mObj_geom = function mObj_geom( geometry, material ){
             }
         }
 
-        /*threeTopology.add(vGroup);
+        threeTopology.add(vGroup);
         threeTopology.add(eGroup);
-        threeTopology.add(fGroup);*/
+        threeTopology.add(fGroup);
 
-        var material = new THREE.MeshBasicMaterial({color: 'blue'});
+        /*var material = new THREE.MeshBasicMaterial({color: 'blue'});
         var mesh = new THREE.Mesh(mergeGeometry, material);
         mesh.name = 'labels';
-        threeTopology.add(mesh);
+        threeTopology.add(mesh);*/
 
         return threeTopology;
     }

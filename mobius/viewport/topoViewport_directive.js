@@ -226,11 +226,25 @@ vidamo.directive('topoViewport', function factoryTopo() {
                     document.getElementById("viewSingle1").style.display = "inline";
 
                     //akm - topo-label
+/*                    scene1.children.map( function(c){ 
+                        if(c instanceof THREE.Object3D){ 
+                            c.children.map( function(obj){ 
+                                if(obj.name == 'labels'){ console.log(camera1.position);
+                                    obj.lookAt( camera1.position );    
+                                }                                   
+                            })
+                        }
+                           
+                    });*/
+
                     scene1.children.map( function(c){ 
                         if(c instanceof THREE.Object3D){ 
                             c.children.map( function(obj){ 
-                                if(obj.name == 'labels'){ 
-                                    //???obj.lookAt( camera1.position );    
+                                if(obj instanceof THREE.Group){ 
+                                    obj.children.map( function(c){ console.log(c);
+                                        console.log(camera1.position);
+                                        c.lookAt( camera1.position );  
+                                    });  
                                 }                                   
                             })
                         }
