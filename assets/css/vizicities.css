@@ -24,11 +24,11 @@
 
 #attribution-container {
   position: absolute;
-  right: -121px;
+  right: -120px;
   bottom: 0;
   z-index: -1;
-  width: 280px;
-  padding: 6px 7px;
+  width: 300px;
+  padding: 14px 1px;
   padding-right: 120px;
   background: rgba(255, 255, 255, 0);
   border-radius: 3px 0 0;
