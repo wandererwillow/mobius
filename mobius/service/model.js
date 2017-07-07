@@ -75,12 +75,31 @@ mobius.factory('generateCode', ['$rootScope',function ($rootScope) {
         }
 
         // execution based topological sort
+        // add pouchdb for data storage
         function generate_execution_code(){
             if(subgraph){
                 model.javascriptCode = '\n';
                 model.javascriptCode += '\n// sub-graph execution: \n';
             }else{
-                model.javascriptCode = '\n// execution: \n';
+                model.javascriptCode = '\n// execution: \n' +
+                    'var db = new PouchDB(\'mobiusdb\');\n'+
+                    'var remoteCouch = false;\n'+
+                    'function savedatabase(objtecid, objtectstring) {\n'+
+                    'db.put({_id: objtecid, data: objtectstring}).then(function (response) {\n' +
+                    '        // handle response\n'+
+                    '    }).catch(function (err) {\n'+
+                    '        console.log(err);\n'+
+                    '    });\n'+
+                    '}\n'+
+                'function getdatabase(objtecid) {\n'+
+                '    return db.get(objtecid).then(function(doc) {\n'+
+                '        //return db.remove(doc._id, doc._rev);\n'+
+                '    }).then(function (result) {\n'+
+                '        // handle result\n'+
+                '    }).catch(function (err) {\n'+
+                '        console.log(err);\n'+
+                '    });\n'+
+                '};\n';
             }
 
             if(!subgraph){
@@ -132,7 +151,7 @@ mobius.factory('generateCode', ['$rootScope',function ($rootScope) {
                         var output_port_num = model.chartViewModel.nodes[sortedOrder[n]].outputConnectors.length;
                         var node_name = model.chartViewModel.nodes[sortedOrder[n]].data.name;
                         var return_obj_name = 'output_' + model.chartViewModel.nodes[sortedOrder[n]].data.name;
-
+                        var return_obj_output_name = model.chartViewModel.nodes[sortedOrder[n]].data.outputConnectors[0].name;
                         //if (output_port_num != 0) {
                             // first get the return object
                             model.javascriptCode += 'var ' + return_obj_name + ' = ';
@@ -152,7 +171,8 @@ mobius.factory('generateCode', ['$rootScope',function ($rootScope) {
                             // fixme | "+ 'text:[]'" should be added here
                             // fixme | this is a undesirable situation, should fix with a more dynamics
 
-                            model.geomListCode += '})\n'
+                            // model.geomListCode += '});\n' +
+                            //     'savedatabase('+ node_name +'.name,'+return_obj_name+'.'+return_obj_output_name+'.extractData()'+');\n';
                         //}
 
                         // case where the node has no output
