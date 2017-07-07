@@ -575,7 +575,7 @@ mobius.controller('viewportCtrl',[
         $scope.toggleViziCities = function(view) {
             switch (view) {
                 case 'main':
-                    $scope.viewportControl.currentCate = 'Vizicities';
+                    $scope.viewportControl.currentCate = 'ViziCities';
                     $scope.viewportControl.showGeometry = false;
                     $scope.showGeometry = false;
                     $scope.showFullCode = false;
