@@ -69,7 +69,7 @@
                         </a>
 
                         <ul class="dropdown-menu" style="top:-2px">
-                             <li><a ng-click="loadExample('SimpleGISExample_v0.1.json')"> GIS Example (simple) </a></li>
+                            <li><a ng-click="loadExample('SimpleGISExample_v0.1.json')"> GIS Example (simple) </a></li>
                             <li><a ng-click="loadExample('01_GIS.json')"> GIS Example </a></li>
                             <li><a ng-click="loadExample('03_SimpleTower.json')"> Simple Tower </a></li>
                             <li><a ng-click="loadExample('01_SpiralTowers.json')"> Spiral Towers </a></li>
@@ -255,19 +255,12 @@
 
                                     <button ng-if="showVizicities"
                                             class="button viewport-menu-button"
-                                            ng-click="extend3D('main')"
                                             style="width: 28px !important;right:37px!important; top:0"
-                                            title="Base Map">
+                                            title="Base Map"
+                                            ng-click="viziViewportControl.togglebasemap('main')">
                                             <i class="fa fa-globe" aria-hidden="true"></i>
                                     </button>
 
-                                    <div   dropdown class="menu-left"  ng-if="showVizicities">
-                                        <button class="button viewport-menu-button" dropdown-toggle
-                                                style="width: 28px !important; right:127px !important;" title="Toggle Grid"
-                                                ng-click="viziViewportControl.togglevizisky('main')">
-                                                <i class="fa fa-sun-o" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
 
                                     <div dropdown on-toggle="toggled(open)"  class="menu-left"  ng-if="showVizicities">
                                         <button class="button viewport-menu-button" dropdown-toggle
@@ -279,13 +272,11 @@
 
                                     <div dropdown on-toggle="toggled(open)"  class="menu-left"  ng-if="showVizicities">
                                         <button class="button viewport-menu-button" dropdown-toggle
-                                                style="width: 28px !important; right:97px !important;" title="Display Mode"
-                                                ng-click="viziViewportControl.toggleviziskybox('main')">
-                                                <i class="fa fa-cube" aria-hidden="true" ></i>
+                                                style="width: 28px !important; right:97px !important;" title="Sun Path"
+                                                ng-click="viziViewportControl.togglevizisky('main')">
+                                                <i class="fa fa-sun-o" aria-hidden="true"></i>
                                         </button>
                                     </div>
-
-
 
                                 </span>
 
@@ -736,7 +727,6 @@
 
                     <!-- central pane with 3 containers -->
                     <div class="graph-area" ui-layout-container size={{graphWidth}} id="graph" min-size="16px">
-                         
                         <!-- central split into 3 rows -->
                         <div ui-layout="{ flow : 'row', dividerSize:'1', disableToggle:true}" style="padding-left: 16px;"> 
 
@@ -759,23 +749,23 @@
                     </div>
 
                     <!-- right pane with 2 container-->
-                    <div class="procedure-area" ui-layout-container size={{procedureWidth}} id="c" min-size="16px">
+                    <div class="procedure-area" ui-layout-container size={{procedureWidth}} id="procedure" min-size="16px">
 
                             <!-- split into 2 rows -->
                             <div ui-layout="{ flow : 'row', dividerSize:'1',disableToggle:true}" style="padding-left: 16px;">
 
-                                <div ui-layout-container min-size="32px" class='monitor' size = "{{graphHeight/4}}px"> 
+                                <div ui-layout-container min-size="32px" class='monitor' size = "{{height/4}}px"> 
                                     <param-designer id='interface'></param-designer>
                                 </div>
 
-                                <div ui-layout-container min-size="32px" class='monitor' size = "{{3*graphHeight/4}}px">
+                                <div ui-layout-container min-size="32px" class='monitor' size = "{{3*height/4}}px">
                                     <procedure-display></procedure-display>
                                 </div>
 
                             </div>
                     </div>
 
-                    <div class="toolkit-area" ui-layout-container size={{toolkitWidth}} id="d" min-size="16px">
+                    <div class="toolkit-area" ui-layout-container size={{toolkitWidth}} id="toolkit" min-size="16px">
                         <toolkit></toolkit>
                     </div>
                 
