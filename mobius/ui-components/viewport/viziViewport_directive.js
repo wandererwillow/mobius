@@ -21,9 +21,10 @@ mobius.directive('viziViewport', function factoryVizi() {
             var VIEWPORT_HEIGHT1 =  document.getElementById('viewport').offsetHeight;
 
             // init view point for vizicities
-            var coords =[1.325401, 103.684431]// [1.325401, 103.684431];
+            var coords =[1.325401, 103.684431]// [1.325401, 103.684431];1.296423, 103.393153
             var skyvalue =0.3;
             var turnpostprocess = false;
+            var changebasemap = false;
             var turnskybox = false;
             var world = VIZI.world('viziViewport', {
                 skybox: true,
@@ -34,11 +35,11 @@ mobius.directive('viziViewport', function factoryVizi() {
 
             // Add controls
             VIZI.Controls.orbit().addTo(world);
-            // Add fundamental map
+            // Add fundamental map http://{s}.tiles.mapbox.com/v3/MapID/{z}/{x}/{y}.png
             VIZI.imageTileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" >OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright" >OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>&copy; <a href="http://www.esri.com/" >Esri</a>'
             }).addTo(world);
-
+            world.options.postProcessing = false;
             // vizicities variables
 
             initVizi();
@@ -96,15 +97,12 @@ mobius.directive('viziViewport', function factoryVizi() {
 
             scope.internalControlVizi.togglevizisky = function(){
                 if(skyvalue === 0.3) {
-                    skyvalue = -0.4
+                    skyvalue = -0.2
                 }else
                 {
                     skyvalue = 0.3
                 }
                 world._environment._skybox.setInclination(skyvalue);
-                //world._environment._skybox = false;
-
-                onchange();
             };
 
             scope.internalControlVizi.togglevizipostprocess = function(){
@@ -115,20 +113,25 @@ mobius.directive('viziViewport', function factoryVizi() {
                     turnpostprocess = false;
                 }
                 world.options.postProcessing = turnpostprocess;
-
-                onchange();
             };
 
-            scope.internalControlVizi.toggleviziskybox = function(){
-                if(turnskybox === false) {
-                    turnskybox = true;
+            scope.internalControlVizi.togglebasemap = function(){
+
+                // needle = 1,
+                // var index = contains.call(world._layers, needle);
+                // world._layers[1]._path;    'http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png'
+
+                world._layers.splice(1, 1);
+
+                if(changebasemap === false) {
+                    changebasemap = true;
+                    VIZI.imageTileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(world);
                 }else
                 {
-                    turnskybox = false;
+                    changebasemap = false;
+                    VIZI.imageTileLayer('http://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png').addTo(world);
                 }
-                world.options.skybox = turnskybox;
 
-                onchange();
             };
             //
             // supporting function for geometry from verb to three.js
@@ -204,40 +207,40 @@ mobius.directive('viziViewport', function factoryVizi() {
 
                 }).addTo(world);
 
-                // //building layer 'http://localhost:63342/mobius/examples/Existing Buildings_3857.json'
-                    // VIZI.geoJSONLayer('http://localhost:63342/mobius/examples/HDB.json', {
-                    //     output: true,
-                    //     interactive: false,
-                    //     style: function (feature) {
-                    //         var color;
-                    //
-                    //         if (feature.properties.energysum) {
-                    //             height = feature.properties.energysum /10;
-                    //             if(height > 1000) {
-                    //                 color = '#F70C05'
-                    //             }else if (height > 800 & height < 1000)
-                    //             {color = '#f7ce12'}
-                    //             else if (height > 600 & height < 800)
-                    //             {color = '#dff716'}
-                    //             else if (height > 400 & height < 600)
-                    //             {color = '#b7f712'}
-                    //             else if (height > 200 & height < 400)
-                    //             {color = '#b7f712'}
-                    //             else if (height > 0 & height < 200)
-                    //             {color = '#65f717'}
-                    //         } else {
-                    //             height = 10 + Math.random() * 10;
-                    //         }
-                    //
-                    //
-                    //         return {
-                    //             height: height,
-                    //             color: color
-                    //         };
-                    //
-                    //     }
-                    //
-                    // }).addTo(world);
+                //building layer 'http://localhost:63342/mobius/examples/Existing Buildings_3857.json'
+                //     VIZI.geoJSONLayer('http://localhost:63342/mobius/examples/HDB.json', {
+                //         output: true,
+                //         interactive: false,
+                //         style: function (feature) {
+                //             var color;
+                //
+                //             if (feature.properties.energysum) {
+                //                 height = feature.properties.energysum /12;
+                //                 if(height > 1000) {
+                //                     color = '#F70C05'
+                //                 }else if (height > 800 & height < 1000)
+                //                 {color = '#f7ce12'}
+                //                 else if (height > 600 & height < 800)
+                //                 {color = '#dff716'}
+                //                 else if (height > 400 & height < 600)
+                //                 {color = '#b7f712'}
+                //                 else if (height > 200 & height < 400)
+                //                 {color = '#b7f712'}
+                //                 else if (height > 0 & height < 200)
+                //                 {color = '#65f717'}
+                //             } else {
+                //                 height = 10 + Math.random() * 10;
+                //             }
+                //
+                //
+                //             return {
+                //                 height: height,
+                //                 color: color
+                //             };
+                //
+                //         }
+                //
+                //     }).addTo(world);
 
                 // openspace later
                 // VIZI.geoJSONLayer('examples/Existing Open Space_3857.json', {
@@ -459,43 +462,39 @@ mobius.directive('viziViewport', function factoryVizi() {
                 //         }
                 //
                 //     }).addTo(world);
-
-                //for whole singapore building layer
+                //
+                // // //for whole singapore building layer
                 // VIZI.geoJSONLayer('http://localhost:63342/mobius/examples/salbuildings.json', {
                 //         output: true,
                 //         interactive: false,
                 //         style: function (feature) {
                 //
                 //
-                //             if (feature.properties.height) {
-                //                 height = feature.properties.height;
-                //             } else {
-                //                 height = 10 + Math.random() * 10;
-                //             }
-                //             // if (feature.geometry.type === 'Polygon') {
-                //             //     for (var i = 0, l = feature.geometry.coordinates.length; i < l; i++) {
-                //             //         for (var j = 0, m = feature.geometry.coordinates[i].length; j < m; j++) {
-                //             //
-                //             //             var c = TransCoord(feature.geometry.coordinates[i][j][0], feature.geometry.coordinates[i][j][1]);
-                //             //             feature.geometry.coordinates[i][j][0] = c.x * 57.29687;
-                //             //             feature.geometry.coordinates[i][j][1] = c.y * 57.29687;
-                //             //         }
-                //             //     }
-                //             // } else if (feature.geometry.type === 'MultiPolygon') {
-                //             //     for (var i = 0, l = feature.geometry.coordinates.length; i < l; i++) {
-                //             //         for (var j = 0, m = feature.geometry.coordinates[i].length; j < m; j++) {
-                //             //             for (var k = 0, n = feature.geometry.coordinates[i][j].length; k < n; k++) {
-                //             //                 var c = TransCoord(feature.geometry.coordinates[i][j][k][0], feature.geometry.coordinates[i][j][k][1]);
-                //             //                 feature.geometry.coordinates[i][j][k][0] = c.x * 57.29687;
-                //             //                 feature.geometry.coordinates[i][j][k][1] = c.y * 57.29687;
-                //             //             }
-                //             //         }
-                //             //     }
+                //             // if (feature.properties.height) {
+                //             //     height = feature.properties.height;
+                //             // } else {
+                //             //     height = 10 + Math.random() * 10;
                 //             // }
+                //             if (feature.properties.BLDG_TYPE_ === "R") {
+                //                 height = 20 + Math.random() * 10;
+                //                 color = '#65f717';
+                //             }
+                //             else if((feature.properties.BLDG_TYPE_ === "I")){
+                //                 height = 10 + Math.random() * 10;
+                //                 color = '#f78b19';
+                //             }
+                //             else if((feature.properties.BLDG_TYPE_ === "H")){
+                //                 height = 15 + Math.random() * 10;
+                //                 color = '#dff716';
+                //             }
+                //             else {
+                //                 height = 15 + Math.random() * 10;
+                //                 color = '#f747dc';
+                //             }
                 //
                 //             return {
-                //                 height: height
-                //
+                //                 height: height,
+                //                 color: color
                 //             };
                 //
                 //         },
